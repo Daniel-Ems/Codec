@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 	FILE *decode_file;
 	struct pcap_header{ 
 		unsigned int file_type;
-		unsigned int major_version;
-		unsigned int minor_version;
+		unsigned int major_version : 16 ;
+		unsigned int minor_version : 16;
 		unsigned int gmt_offset;
 		unsigned int accuracy_delta;
 		unsigned int maximum_length;
