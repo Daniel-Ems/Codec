@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
 	};
 
 	struct ethernet_header{
-		long d_mac : 48;
-		long s_mac : 48;
-		long type : 48;
+		long unsigned int d_mac : 48;
+		long unsigned int s_mac : 48;
+		int type : 16;
 	};
 
 	struct ipv4_header{
@@ -75,17 +75,56 @@ int main(int argc, char *argv[])
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
+	//TODO: Remove debugging print statements
+	printf("%x\n", values.file_type);
+	printf("%x\n", values.major_version);
+	printf("%x\n", values.minor_version);
+	printf("%x\n", values.gmt_offset);
+	printf("%x\n", values.accuracy_delta);
+	printf("%x\n", values.maximum_length);
+	printf("%x\n", values.link_layer);
+
 	struct pcap_packet_header pcap_header;
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+
+	printf("epoch %x\n",pcap_header.unix_epoch);
+	printf("microseconds %x\n", pcap_header.epoch_microseconds);
+	printf("capture_length %x\n", pcap_header.capture_length);
+	printf("packet_length %x\n", pcap_header.packet_length);
 
 	struct ethernet_header frame;
 	fread(&frame, sizeof(frame), 1, decode_file);
 
+	printf("destination %ld\n", frame.d_mac);
+	printf("Source %ld\n", frame.s_mac);
+	printf("type %x\n", frame.type);
+
+
+
 	struct ipv4_header contents;
 	fread(&contents, sizeof(contents), 1, decode_file);
 
+	printf("version %x\n", contents.version);
+	printf("ihl %x\n", contents.ihl);
+	printf("dscp %x\n", contents.dscp);
+	printf("ecn %x\n", contents.ecn);
+	printf("total_length %x\n", contents.total_length);
+	printf("id %x\n", contents.id);
+	printf("flags %x\n", contents.flags);
+	printf("offset %x\n", contents.offset);
+	printf("ttl %x\n", contents.ttl);
+	printf("protocol %x\n", contents.protocol);
+	printf("checksum %x\n", contents.checksum);
+	printf("s_ip %x\n", contents.s_ip);
+	printf("d_ip %x\n", contents.d_ip);
+
 	struct udp_header udp;
 	fread(&udp, sizeof(udp), 1, decode_file);
+
+	printf("s_port %x\n", udp.s_port);
+	printf("d_port %x\n", udp.d_port);
+	printf("length %x\n", udp.length);
+	printf("checksum %x\n", udp.checksum);
 
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
@@ -98,20 +137,9 @@ int main(int argc, char *argv[])
 	printf("id %x\n", message.id);
 	printf("payload %s\n", message.payload);
 
-
-	printf("epoch %x\n",pcap_header.unix_epoch);
-	printf("microseconds %x\n", pcap_header.epoch_microseconds);
-	printf("capture_length %x\n", pcap_header.capture_length);
-	printf("packet_length %x\n", pcap_header.packet_length);
-	//TODO: Remove debugging print statements
-	printf("%x\n", values.file_type);
-	printf("%x\n", values.major_version);
-	printf("%x\n", values.minor_version);
-	printf("%x\n", values.gmt_offset);
-	printf("%x\n", values.accuracy_delta);
-	printf("%x\n", values.maximum_length);
-	printf("%x\n", values.link_layer);
 }
+
+
 	//1) Add the ability to take two arguments (1."Encode" 2."Decode")
 	//2) "Decode" will have one additional argument, a file to be 		//    decoded.
 	//3) "Encode" Will have two additional arguments, a file to be 
