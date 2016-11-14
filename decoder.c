@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
 	};
 
 	struct ethernet_header{
-		int d_mac;
-		int s_mac;
-		int type;
+		long d_mac : 48;
+		long s_mac : 48;
+		long type : 48;
 	};
 
 	struct ipv4_header{
@@ -47,6 +47,23 @@ int main(int argc, char *argv[])
 		int d_ip;
 	};
 
+	struct udp_header{
+		int s_port : 16;
+		int d_port : 16;
+		int length : 16;
+		int checksum : 16;
+	};
+
+	struct zerg_header{
+		int version : 4 ;
+		int type : 4;
+		int total : 32;
+		int source : 16;
+		int dest : 16;
+		int id;
+		char payload[64];
+	};
+ 
 	if(argc < 1)
 	{
 		printf("Please provide a file to be decoded\n");
@@ -64,7 +81,24 @@ int main(int argc, char *argv[])
 	struct ethernet_header frame;
 	fread(&frame, sizeof(frame), 1, decode_file);
 
-	
+	struct ipv4_header contents;
+	fread(&contents, sizeof(contents), 1, decode_file);
+
+	struct udp_header udp;
+	fread(&udp, sizeof(udp), 1, decode_file);
+
+	struct zerg_header message;
+	fread(&message, sizeof(message), 1, decode_file);
+
+	printf("Version %x\n", message.version);
+	printf("type %x\n", message.type);
+	printf("total %x\n", message.total);
+	printf("source %x\n", message.source);
+	printf("destination %x\n", message.dest);
+	printf("id %x\n", message.id);
+	printf("payload %s\n", message.payload);
+
+
 	printf("epoch %x\n",pcap_header.unix_epoch);
 	printf("microseconds %x\n", pcap_header.epoch_microseconds);
 	printf("capture_length %x\n", pcap_header.capture_length);
