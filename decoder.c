@@ -6,15 +6,26 @@ int main(int argc, char *argv[])
 {
 	const char *packet_id;
 	FILE *decode_file;
-	struct pcap_header{ 
-		unsigned int file_type;
-		unsigned int major_version : 16 ;
-		unsigned int minor_version : 16;
-		unsigned int gmt_offset;
-		unsigned int accuracy_delta;
-		unsigned int maximum_length;
-		unsigned int link_layer;
+
+	//TODO: Make this as a typdef and move to a header file
+	struct pcap_file_header{ 
+		int file_type;
+		int major_version : 16 ;
+		int minor_version : 16;
+		int gmt_offset;
+		int accuracy_delta;
+		int maximum_length;
+		int link_layer;
 	};
+
+	struct pcap_packet_header{
+		int unix_epoch; 
+		int epoch_microseconds;
+		int capture_length;
+		int packet_length;
+	};
+
+	
 	if(argc < 1)
 	{
 		printf("Please provide a file to be decoded\n");
@@ -22,9 +33,18 @@ int main(int argc, char *argv[])
 	}else{ 
 		decode_file = fopen(argv[1], "rb");
 	}
-	
-	struct pcap_header values;
+
+	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
+
+	struct pcap_packet_header pcap_header;
+	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+
+	printf("epoch %x\n",pcap_header.unix_epoch);
+	printf("microseconds %x\n", pcap_header.epoch_microseconds);
+	printf("capture_length %x\n", pcap_header.capture_length);
+	printf("packet_length %x\n", pcap_header.packet_length);
+	//TODO: Remove debugging print statements
 	printf("%x\n", values.file_type);
 	printf("%x\n", values.major_version);
 	printf("%x\n", values.minor_version);
