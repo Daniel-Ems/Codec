@@ -1,8 +1,38 @@
 #include <stdio.h>
-
-int main()
+#include <sysexits.h>
+#include <string.h>
+#include <stdlib.h>
+int main(int argc, char *argv[])
 {
-
+	const char *packet_id;
+	FILE *decode_file;
+	struct pcap_header{ 
+		int file_type;
+		int major_version;
+		int minor_version;
+		int gmt_offset;
+		int accuracy_delta;
+		int maximum_length;
+		int link_layer;
+	};
+	if(argc < 1)
+	{
+		printf("Please provide a file to be decoded\n");
+		return EX_USAGE;
+	}else{ 
+		decode_file = fopen(argv[1], "rb");
+	}
+	
+	struct pcap_header values;
+	fread(&values, sizeof(values), 1, decode_file);
+	printf("%x\n", values.file_type);
+	printf("%x\n", values.major_version);
+	printf("%x\n", values.minor_version);
+	printf("%x\n", values.gmt_offset);
+	printf("%x\n", values.accuracy_delta);
+	printf("%x\n", values.maximum_length);
+	printf("%x\n", values.link_layer);
+}
 	//1) Add the ability to take two arguments (1."Encode" 2."Decode")
 	//2) "Decode" will have one additional argument, a file to be 		//    decoded.
 	//3) "Encode" Will have two additional arguments, a file to be 
@@ -48,6 +78,3 @@ int main()
 	*/
 
 
-
-
-		
