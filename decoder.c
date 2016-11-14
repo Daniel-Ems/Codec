@@ -25,7 +25,28 @@ int main(int argc, char *argv[])
 		int packet_length;
 	};
 
-	
+	struct ethernet_header{
+		int d_mac;
+		int s_mac;
+		int type;
+	};
+
+	struct ipv4_header{
+		int version : 4;
+		int ihl : 4;
+		int dscp : 12;
+		int ecn : 4;
+		int total_length : 16;
+		int id : 16;
+		int flags : 4;
+		int offset : 12;
+		int ttl : 8;
+		int protocol : 8;
+		int checksum : 16;
+		int s_ip;
+		int d_ip;
+	};
+
 	if(argc < 1)
 	{
 		printf("Please provide a file to be decoded\n");
@@ -40,6 +61,10 @@ int main(int argc, char *argv[])
 	struct pcap_packet_header pcap_header;
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
 
+	struct ethernet_header frame;
+	fread(&frame, sizeof(frame), 1, decode_file);
+
+	
 	printf("epoch %x\n",pcap_header.unix_epoch);
 	printf("microseconds %x\n", pcap_header.epoch_microseconds);
 	printf("capture_length %x\n", pcap_header.capture_length);
