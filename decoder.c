@@ -7,13 +7,13 @@ int main(int argc, char *argv[])
 	const char *packet_id;
 	FILE *decode_file;
 	struct pcap_header{ 
-		int file_type;
-		int major_version;
-		int minor_version;
-		int gmt_offset;
-		int accuracy_delta;
-		int maximum_length;
-		int link_layer;
+		unsigned int file_type;
+		unsigned int major_version;
+		unsigned int minor_version;
+		unsigned int gmt_offset;
+		unsigned int accuracy_delta;
+		unsigned int maximum_length;
+		unsigned int link_layer;
 	};
 	if(argc < 1)
 	{
