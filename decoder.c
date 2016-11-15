@@ -38,7 +38,10 @@ int main(int argc, char *argv[])
 	int total = message.version >> 24;
 	message.version = message.version >> 28; 
 
-	int ipv4_ihl = contents.version >> 12;
+	int ipv4_ihl = contents.version  & 0x0f;
+	int dscp = contents.version >> 10;
+	int ecn = contents.version >> 12;
+	contents.version = contents.version >> 4;
 
 	//TODO: Remove debugging pruint32_t statements
 	printf("File Header -> size:%zd\n", sizeof(values));
@@ -63,9 +66,9 @@ int main(int argc, char *argv[])
 
 	printf("Ipv4 header, size:%zd\n", sizeof(contents));
 	printf("version %x\n", contents.version);
-	printf("ihl %x\n", ipv4_ihl);
-	//printf("dscp %x\n", contents.dscp);
-	//printf("ecn %x\n", contents.ecn);
+	printf("ihl %d\n", ipv4_ihl);
+	printf("dscp %x\n", dscp);
+	printf("ecn %x\n", ecn);
 	printf("total_length %x\n", contents.total_length);
 	printf("id %x\n", contents.id);
 	//printf("flags %x\n", contents.flags);
