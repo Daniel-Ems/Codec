@@ -18,4 +18,9 @@
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
 
-
+char *decode_message(int total, FILE decode_file)
+{
+		char *message = malloc(total-zerg_header_size);
+		fread(&message, sizeof(message), 1, decode_file);
+		return message;
+}
