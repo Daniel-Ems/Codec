@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
-
+enum{zerg_header_length = 12};
 	//TODO: Make this as a typdef and move to a header file
 	struct pcap_file_header{ 
 		uint32_t file_type;
@@ -34,9 +34,9 @@
 	};
 
 	struct ipv4_header{
-		uint32_t version : 8;
+		uint32_t version : 16;
 		//uint32_t ihl : 4;
-		uint32_t dscp : 8;
+		//nt32_t dscp : 8;
 		uint32_t total_length : 16;
 		uint32_t id : 16;
 		//uint32_t flags : 4;
@@ -64,5 +64,7 @@
 		uint32_t id;
 		char payload[64];
 	};
+
+char *decode_message(int total);
  
 #endif
