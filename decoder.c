@@ -2,6 +2,7 @@
 #include <sysexits.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 int main(int argc, char *argv[])
 {
 	const char *packet_id;
@@ -9,59 +10,58 @@ int main(int argc, char *argv[])
 
 	//TODO: Make this as a typdef and move to a header file
 	struct pcap_file_header{ 
-		int file_type;
-		int major_version : 16 ;
-		int minor_version : 16;
-		int gmt_offset;
-		int accuracy_delta;
-		int maximum_length;
-		int link_layer;
+		unsigned int file_type;
+		unsigned int major_version : 16 ;
+		unsigned int minor_version : 16;
+		unsigned int gmt_offset;
+		unsigned int accuracy_delta;
+		unsigned int maximum_length;
+		unsigned int link_layer;
 	};
 
 	struct pcap_packet_header{
-		int unix_epoch; 
-		int epoch_microseconds;
-		int capture_length;
-		int packet_length;
+		unsigned int unix_epoch; 
+		unsigned int epoch_microseconds;
+		unsigned int capture_length;
+		unsigned int packet_length;
 	};
 
 	struct ethernet_header{
-		long unsigned int d_mac : 48;
-		long unsigned int s_mac : 48;
-		int type : 16;
+		char d_mac[6] ;
+		char s_mac[6] ;
+		uint2_t type;
 	};
 
 	struct ipv4_header{
-		int version : 4;
-		int ihl : 4;
-		int dscp : 12;
-		int ecn : 4;
-		int total_length : 16;
-		int id : 16;
-		int flags : 4;
-		int offset : 12;
-		int ttl : 8;
-		int protocol : 8;
-		int checksum : 16;
-		int s_ip;
-		int d_ip;
+		unsigned int version : 4;
+		unsigned int ihl : 4;
+		unsigned int dscp : 8;
+		unsigned int total_length : 16;
+		unsigned int id : 16;
+		unsigned int flags : 4;
+		unsigned int offset : 12;
+		unsigned int ttl : 8;
+		unsigned int protocol : 8;
+		unsigned int checksum : 16;
+		unsigned int s_ip;
+		unsigned int d_ip;
 	};
 
 	struct udp_header{
-		int s_port : 16;
-		int d_port : 16;
-		int length : 16;
-		int checksum : 16;
+		unsigned int s_port : 16;
+		unsigned int d_port : 16;
+		unsigned int length : 16;
+		unsigned int checksum : 16;
 	};
 
 	struct zerg_header{
-		int version : 4 ;
-		int type : 4;
-		int total : 32;
-		int source : 16;
-		int dest : 16;
-		int id;
-		char payload[64];
+		unsigned int version : 4 ;
+		unsigned int type : 4;
+		unsigned int total : 24;
+		unsigned int source : 16;
+		unsigned int dest : 16;
+		unsigned int id;
+		char payload[32];
 	};
  
 	if(argc < 1)
@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
-	//TODO: Remove debugging print statements
+	//TODO: Remove debugging prunsigned int statements
+	printf("File Header -> size:%zd\n", sizeof(values));
 	printf("%x\n", values.file_type);
 	printf("%x\n", values.major_version);
 	printf("%x\n", values.minor_version);
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
 	struct pcap_packet_header pcap_header;
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
 
+	printf("Pcap packet Header, size:%zd\n", sizeof(pcap_header));
 	printf("epoch %x\n",pcap_header.unix_epoch);
 	printf("microseconds %x\n", pcap_header.epoch_microseconds);
 	printf("capture_length %x\n", pcap_header.capture_length);
@@ -95,8 +97,9 @@ int main(int argc, char *argv[])
 	struct ethernet_header frame;
 	fread(&frame, sizeof(frame), 1, decode_file);
 
-	printf("destination %ld\n", frame.d_mac);
-	printf("Source %ld\n", frame.s_mac);
+	printf("Ethernet Frame, size:%zd\n", sizeof(frame));
+	printf("destination %x\n", frame.d_mac);
+	printf("Source %s\n", frame.s_mac);
 	printf("type %x\n", frame.type);
 
 
@@ -104,10 +107,11 @@ int main(int argc, char *argv[])
 	struct ipv4_header contents;
 	fread(&contents, sizeof(contents), 1, decode_file);
 
+	printf("Ipv4 header, size:%zd\n", sizeof(contents));
 	printf("version %x\n", contents.version);
 	printf("ihl %x\n", contents.ihl);
 	printf("dscp %x\n", contents.dscp);
-	printf("ecn %x\n", contents.ecn);
+	//printf("ecn %x\n", contents.ecn);
 	printf("total_length %x\n", contents.total_length);
 	printf("id %x\n", contents.id);
 	printf("flags %x\n", contents.flags);
@@ -121,6 +125,7 @@ int main(int argc, char *argv[])
 	struct udp_header udp;
 	fread(&udp, sizeof(udp), 1, decode_file);
 
+	printf("UDP Header, size:%zd\n", sizeof(udp));
 	printf("s_port %x\n", udp.s_port);
 	printf("d_port %x\n", udp.d_port);
 	printf("length %x\n", udp.length);
@@ -129,6 +134,7 @@ int main(int argc, char *argv[])
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
 
+	printf("zerg header, size:%zd\n", sizeof(message));
 	printf("Version %x\n", message.version);
 	printf("type %x\n", message.type);
 	printf("total %x\n", message.total);
@@ -167,9 +173,9 @@ int main(int argc, char *argv[])
 	-> 7th -> from the 12byte on is the Message Payload
 		Payload's
 		0) Message -> just a message starting at the 12th byte
-		1) Status Payload -> 3bytes of Hit points
+		1) Status Payload -> 3bytes of Hit pounsigned ints
 						  -> 1byte of Armor
-						  -> 3bytes of Max hit points 
+						  -> 3bytes of Max hit pounsigned ints 
 						  -> 1byte of type
 						  -> 4bytes of speed
 						  -> the remainder is the name
