@@ -43,6 +43,21 @@ int main(int argc, char *argv[])
 	int ecn = contents.version >> 12;
 	contents.version = contents.version >> 4;
 
+	int zerg_header = type;
+		switch(zerg_header){
+			case(0):
+				printf("Message header\n");
+				break;
+			case(1):
+				printf("Status of Zerg\n");
+				break;
+			case(2):
+				printf("Command Instruction\n");
+				break;
+			case(3):
+				printf("GPS Data\n");
+				break;
+			}
 	//TODO: Remove debugging pruint32_t statements
 	printf("File Header -> size:%zd\n", sizeof(values));
 	printf("%x\n", values.file_type);
