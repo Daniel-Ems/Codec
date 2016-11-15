@@ -10,57 +10,57 @@ int main(int argc, char *argv[])
 
 	//TODO: Make this as a typdef and move to a header file
 	struct pcap_file_header{ 
-		unsigned int file_type;
-		unsigned int major_version : 16 ;
-		unsigned int minor_version : 16;
-		unsigned int gmt_offset;
-		unsigned int accuracy_delta;
-		unsigned int maximum_length;
-		unsigned int link_layer;
+		uint32_t file_type;
+		uint32_t major_version : 16;
+		uint32_t minor_version : 16;
+		uint32_t gmt_offset;
+		uint32_t accuracy_delta;
+		uint32_t maximum_length;
+		uint32_t link_layer;
 	};
 
 	struct pcap_packet_header{
-		unsigned int unix_epoch; 
-		unsigned int epoch_microseconds;
-		unsigned int capture_length;
-		unsigned int packet_length;
+		uint32_t unix_epoch; 
+		uint32_t epoch_microseconds;
+		uint32_t capture_length;
+		uint32_t packet_length;
 	};
 
 	struct ethernet_header{
-		char d_mac[6] ;
-		char s_mac[6] ;
-		uint2_t type;
+		char d_mac[6];
+		char s_mac[6];
+		uint16_t type;
 	};
 
 	struct ipv4_header{
-		unsigned int version : 4;
-		unsigned int ihl : 4;
-		unsigned int dscp : 8;
-		unsigned int total_length : 16;
-		unsigned int id : 16;
-		unsigned int flags : 4;
-		unsigned int offset : 12;
-		unsigned int ttl : 8;
-		unsigned int protocol : 8;
-		unsigned int checksum : 16;
-		unsigned int s_ip;
-		unsigned int d_ip;
+		uint32_t version : 4;
+		uint32_t ihl : 4;
+		uint32_t dscp : 8;
+		uint32_t total_length : 16;
+		uint32_t id : 16;
+		uint32_t flags : 4;
+		uint32_t offset : 12;
+		uint32_t ttl : 8;
+		uint32_t protocol : 8;
+		uint32_t checksum : 16;
+		uint32_t s_ip;
+		uint32_t d_ip;
 	};
 
 	struct udp_header{
-		unsigned int s_port : 16;
-		unsigned int d_port : 16;
-		unsigned int length : 16;
-		unsigned int checksum : 16;
+		uint32_t s_port : 16;
+		uint32_t d_port : 16;
+		uint32_t length : 16;
+		uint32_t checksum : 16;
 	};
 
 	struct zerg_header{
-		unsigned int version : 4 ;
-		unsigned int type : 4;
-		unsigned int total : 24;
-		unsigned int source : 16;
-		unsigned int dest : 16;
-		unsigned int id;
+		uint32_t version : 4 ;
+		uint32_t type : 4;
+		uint32_t total : 24;
+		uint32_t source : 16;
+		uint32_t dest : 16;
+		uint32_t id;
 		char payload[32];
 	};
  
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
-	//TODO: Remove debugging prunsigned int statements
+	//TODO: Remove debugging pruint32_t statements
 	printf("File Header -> size:%zd\n", sizeof(values));
 	printf("%x\n", values.file_type);
 	printf("%x\n", values.major_version);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
 	printf("Ethernet Frame, size:%zd\n", sizeof(frame));
 	printf("destination %x\n", frame.d_mac);
-	printf("Source %s\n", frame.s_mac);
+	printf("Source %x\n", frame.s_mac);
 	printf("type %x\n", frame.type);
 
 
@@ -173,9 +173,9 @@ int main(int argc, char *argv[])
 	-> 7th -> from the 12byte on is the Message Payload
 		Payload's
 		0) Message -> just a message starting at the 12th byte
-		1) Status Payload -> 3bytes of Hit pounsigned ints
+		1) Status Payload -> 3bytes of Hit pouint32_ts
 						  -> 1byte of Armor
-						  -> 3bytes of Max hit pounsigned ints 
+						  -> 3bytes of Max hit pouint32_ts 
 						  -> 1byte of type
 						  -> 4bytes of speed
 						  -> the remainder is the name
