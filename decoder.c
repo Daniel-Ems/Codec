@@ -34,6 +34,12 @@ int main(int argc, char *argv[])
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
 
+	int type = message.version & 0x0f;
+	int total = message.version >> 24;
+	message.version = message.version >> 28; 
+
+	int ipv4_ihl = contents.version >> 12;
+
 	//TODO: Remove debugging pruint32_t statements
 	printf("File Header -> size:%zd\n", sizeof(values));
 	printf("%x\n", values.file_type);
@@ -57,8 +63,8 @@ int main(int argc, char *argv[])
 
 	printf("Ipv4 header, size:%zd\n", sizeof(contents));
 	printf("version %x\n", contents.version);
-	//printf("ihl %x\n", contents.ihl);
-	printf("dscp %x\n", contents.dscp);
+	printf("ihl %x\n", ipv4_ihl);
+	//printf("dscp %x\n", contents.dscp);
 	//printf("ecn %x\n", contents.ecn);
 	printf("total_length %x\n", contents.total_length);
 	printf("id %x\n", contents.id);
@@ -76,9 +82,7 @@ int main(int argc, char *argv[])
 	printf("length %d\n", ntohs(udp.length));
 	printf("checksum %x\n", udp.checksum);
 
-	int type = message.version & 0x0f;
-	int total = message.version >> 24;
-	message.version = message.version >> 28; 
+
 
 	//int version = message.type;
 	printf("zerg header, size:%zd\n", sizeof(message));
