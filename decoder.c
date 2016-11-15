@@ -2,11 +2,13 @@
 #include <sysexits.h>
 
 #include "structs.h"
+#include "structs.c"
 
 int main(int argc, char *argv[])
 {
 
 	FILE *decode_file;
+	char *message_payload;
 
 	if(argc < 2)
 	{
@@ -46,7 +48,7 @@ int main(int argc, char *argv[])
 	int zerg_header = type;
 		switch(zerg_header){
 			case(0):
-				printf("Message header\n");
+				message_payload = decode_message(total, decode_file);
 				break;
 			case(1):
 				printf("Status of Zerg\n");
@@ -110,7 +112,7 @@ int main(int argc, char *argv[])
 	printf("source %x\n", message.source);
 	printf("destination %x\n", message.dest);
 	printf("id %x\n", ntohs(message.id));
-	printf("payload %s\n", message.payload);
+	printf("payload %s\n", message_payload);
 	//printf("version %d\n", version);
 
 	fclose(decode_file);
