@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
 
 	FILE *decode_file;
-	char *message_payload;
+	//char *message_payload;
 
 	if(argc < 2)
 	{
@@ -47,13 +47,14 @@ int main(int argc, char *argv[])
 	int ecn = contents.version >> 12;
 	contents.version = contents.version >> 4;
 
+	zerg = struct_init(total, decode_file);
 	int zerg_header = type;
 		switch(zerg_header){
 			case(0):
-				message_payload = decode_message(total, decode_file);
+				messages(zerg);
 				break;
 			case(1):
-				zerg = struct_init(total, decode_file);
+				printf("something");
 				break;
 			case(2):
 				printf("Command Instruction\n");
@@ -114,9 +115,10 @@ int main(int argc, char *argv[])
 	printf("source %x\n", message.source);
 	printf("destination %x\n", message.dest);
 	printf("id %x\n", ntohs(message.id));
-	printf("payload %s\n", message_payload);
+	//printf("payload %s\n", zerg -> zerg.name);
 	//printf("version %d\n", version);
 
+	free(zerg);
 	fclose(decode_file);
 }
 
