@@ -71,11 +71,18 @@ enum{zerg_header_length = 12};
 			char name[32];
 		};
 
+	struct message{
+			char *message;
+	};
+
 	union payload {
 		struct status_payload zerg;
+		struct message name;
 	};
 
 char *decode_message(int total, FILE *decode_file);
 union payload *memory(int total, FILE *decode_file);
+void messages(union payload *zerg);
  
 #endif
+
