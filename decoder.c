@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
 
-	 union payload *zerg;
+	 union payload *zerged;
 
 	int type = message.version & 0x0f;
 	int total = message.version >> 24;
@@ -47,11 +47,11 @@ int main(int argc, char *argv[])
 	int ecn = contents.version >> 12;
 	contents.version = contents.version >> 4;
 
-	zerg = struct_init(total, decode_file);
+	zerged = struct_init(total, decode_file);
 	int zerg_header = type;
 		switch(zerg_header){
 			case(0):
-				messages(zerg);
+				messages(zerged);
 				break;
 			case(1):
 				printf("something");
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 	//printf("payload %s\n", zerg -> zerg.name);
 	//printf("version %d\n", version);
 
-	free(zerg);
+	free(zerged);
 	fclose(decode_file);
 }
 
