@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
 
 	 union payload *zerged;
 
+
+	//TODO: Clean bit shifts and &'s perhaps put in a function
 	int type = message.version & 0x0f;
 	int total = message.version >> 24;
 	message.version = message.version >> 28; 
@@ -54,15 +56,19 @@ int main(int argc, char *argv[])
 				messages(zerged);
 				break;
 			case(1):
-				status(zerged);
+				stat_payload(zerged);
 				break;
 			case(2):
+				//TODO: create a function that takes command instruction
+				com_payload(zerged);
 				printf("Command Instruction\n");
 				break;
 			case(3):
 				printf("GPS Data\n");
 				break;
 			}
+
+
 	//TODO: Remove debugging pruint32_t statements
 	printf("File Header -> size:%zd\n", sizeof(values));
 	printf("%x\n", values.file_type);
