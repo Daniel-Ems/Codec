@@ -20,3 +20,12 @@ void messages(union payload *zerg)
 		free(zerg);
 
 }
+
+void status(union payload *zerg)
+{
+		printf("%x\n", zerg-> zerg.hit_armor);
+		printf("%x\n", zerg-> zerg.max_type);
+		printf("%x\n", zerg-> zerg.speed);
+		printf("%s\n", zerg-> zerg.name);
+		free(zerg);
+} 
