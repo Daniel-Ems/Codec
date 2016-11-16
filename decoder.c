@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 				messages(zerged);
 				break;
 			case(1):
-				printf("something");
+				status(zerged);
 				break;
 			case(2):
 				printf("Command Instruction\n");
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 	//printf("payload %s\n", zerg -> zerg.name);
 	//printf("version %d\n", version);
 
-	free(zerged);
+	
 	fclose(decode_file);
 }
 
