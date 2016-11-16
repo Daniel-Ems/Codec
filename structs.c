@@ -1,11 +1,6 @@
 #include "structs.h"
 
-char *decode_message(int total, FILE *decode_file)
-{
-		char *message = malloc(total - zerg_header_length);
-		fread(message, total-zerg_header_length, 1, decode_file);
-		return message;
-}
+
 
 
 union payload *struct_init(int total, FILE *decode_file)
@@ -15,3 +10,9 @@ union payload *struct_init(int total, FILE *decode_file)
 		return memory;
 }
 
+void messages(union payload *zerg)
+{
+		printf("%s\n",zerg -> name.message);
+		free(zerg);
+
+}
