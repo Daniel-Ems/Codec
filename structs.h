@@ -76,8 +76,8 @@ enum{zerg_header_length = 12};
 	};
 
 	struct command_payload{
-		uint32_t command;
-		uint32_t parameter_one;
+		uint32_t command : 16;
+		uint32_t parameter_one : 16;
 		uint32_t paramter_two;
 	};
 	union payload {
