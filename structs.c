@@ -48,4 +48,13 @@ void stat_payload(union payload *zerg)
 		free(zerg);
 } 
 
-void com_payload(union payload *zerg);
+void com_payload(union payload *zerg)
+{
+	if(sizeof(zerg) ==  sizeof(uint16_t)){
+		printf("Command : %x\n", zerg->command.command);
+	}else {
+		printf("Command : %x\n", zerg->command.command);
+		printf("This is a test\n");
+	}
+}
+
