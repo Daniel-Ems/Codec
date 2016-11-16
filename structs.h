@@ -68,11 +68,11 @@ enum{zerg_header_length = 12};
 			uint32_t hit_armor;
 			uint32_t max_type;
 			uint32_t speed;
-			char name[32];
+			char name[1];
 		};
 
 	struct message{
-			char message[12];
+			char message[1];
 	};
 
 	union payload {
@@ -80,9 +80,10 @@ enum{zerg_header_length = 12};
 		struct message name;
 	};
 
+void status(union payload *zerg);
 void messages(union payload *zerg);
 char *decode_message(int total, FILE *decode_file);
-union payload *memory(int total, FILE *decode_file);
+union payload *memory(int total,FILE *decode_file);
  
 #endif
 
