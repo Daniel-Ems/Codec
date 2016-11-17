@@ -67,51 +67,8 @@ int main(int argc, char *argv[])
 			}
 
 
-	//TODO: Remove debugging pruint32_t statements
-	printf("File Header -> size:%zd\n", sizeof(values));
-	printf("%x\n", values.file_type);
-	printf("%x\n", values.major_version);
-	printf("%x\n", values.minor_version);
-	printf("%x\n", values.gmt_offset);
-	printf("%x\n", values.accuracy_delta);
-	printf("%x\n", values.maximum_length);
-	printf("%x\n", values.link_layer);
-
-	printf("Pcap packet Header, size:%zd\n", sizeof(pcap_header));
-	printf("epoch %x\n",pcap_header.unix_epoch);
-	printf("microseconds %x\n", pcap_header.epoch_microseconds);
-	printf("capture_length %x\n", pcap_header.capture_length);
-	printf("packet_length %x\n", pcap_header.packet_length);
-
-	printf("Ethernet Frame, size:%zd\n", sizeof(frame));
-	printf("destination %x\n", frame.d_mac);
-	printf("Source %x\n", frame.s_mac);
-	printf("type %x\n", frame.type);
-
-	printf("Ipv4 header, size:%zd\n", sizeof(contents));
-	printf("version %x\n", contents.version);
-	printf("ihl %d\n", ipv4_ihl);
-	printf("dscp %x\n", dscp);
-	printf("ecn %x\n", ecn);
-	printf("total_length %x\n", contents.total_length);
-	printf("id %x\n", contents.id);
-	//printf("flags %x\n", contents.flags);
-	printf("offset %x\n", contents.offset);
-	printf("ttl %x\n", contents.ttl);
-	printf("protocol %x\n", contents.protocol);
-	printf("checksum %x\n", contents.checksum);
-	printf("s_ip %x\n", contents.s_ip);
-	printf("d_ip %x\n", contents.d_ip);
-
-	printf("UDP Header, size:%zd\n", sizeof(udp));
-	printf("s_port %x\n", udp.s_port);
-	printf("d_port %x\n", udp.d_port);
-	printf("length %d\n", ntohs(udp.length));
-	printf("checksum %x\n", udp.checksum);
-
-
-
-	printf("type %d\n", type);
+	//TODO: debugging print statments for output
+	printf("type %x\n", type);
 	printf("total %d\n", total);
 
 	
