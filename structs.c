@@ -135,28 +135,38 @@ double doub_converter(uint64_t *number)
 
 void gps(union payload *zerg)
 {
-	uint64_t lon = doub_flip(&zerg->gps.long_first, &zerg->gps.long_second);
+
 
 	uint64_t lat = doub_flip(&zerg->gps.lat_first, &zerg->gps.lat_second);
-
-	double longitude = doub_converter(&lon);
-
 	double latitude = doub_converter(&lat);
+	if(latitude >= 1)
+	{
+		printf("latitude : %lf deg. N\n", latitude);
+	}else{
+		printf("latitude : %lf deg. S\n", latitude * (-1));
+	}
+
+	uint64_t lon = doub_flip(&zerg->gps.long_first, &zerg->gps.long_second);
+	double longitude = doub_converter(&lon);
+	if(longitude >= 1)
+	{
+		printf("longitude: %lf deg. W\n", longitude);
+	}else{
+		printf("longitude: %lf deg. E\n", longitude * (-1));
+	}
 
 	float altitude = converter(&zerg->gps.altitude);
+	printf("altitude : %.1fm\n", altitude * 1.8288);
 
 	float bearing = converter(&zerg->gps.bearing);
+	printf("bearing  : %f deg.\n", bearing );
 
 	float speed = converter(&zerg->gps.speed);
+	printf("speed    : %.fkm/h\n", speed * 3.6);
 
 	float accuracy = converter(&zerg->gps.accuracy);
+	printf("accuracy : %.fm\n", accuracy);
 
-	printf("latitude : %lf\n", latitude);
-	printf("longitude: %lf\n", longitude);
-	printf("altitude : %f\n", altitude);
-	printf("bearing  : %f\n", bearing);
-	printf("speed    : %f\n", speed);
-	printf("accuracy : %f\n", accuracy);
 }
 
 
