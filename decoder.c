@@ -46,7 +46,9 @@ int main(int argc, char *argv[])
 	contents.version = contents.version >> 4;
 
 	print_zerg_header(message);
+
 	zerged = struct_init(total, decode_file);
+
 	int zerg_header = type;
 		switch(zerg_header){
 			case(0):
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
 				com_payload(zerged);
 				break;
 			case(3):
-				printf("GPS Data\n");
+				gps(zerged);
 				break;
 			}
 
