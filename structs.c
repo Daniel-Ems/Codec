@@ -42,7 +42,7 @@ void stat_payload(union payload *zerg)
 		free(zerg);
 } 
 
-
+//TODO: if time, find a way to clean code
 void com_payload(union payload *zerg)
 {
 	uint32_t command = zerg->command.command;
