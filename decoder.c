@@ -43,9 +43,6 @@ int main(int argc, char *argv[])
 	int type = message.version & 0x0f;
 	int total = message.version >> 24;
 
-	int ipv4_ihl = contents.version  & 0x0f;
-	int dscp = contents.version >> 10;
-	int ecn = contents.version >> 12;
 	contents.version = contents.version >> 4;
 
 	print_zerg_header(message);
