@@ -87,11 +87,11 @@ float converter(uint32_t *thing)
 	union converter{
 			float speed;
 			uint32_t test;
-		};
-		union converter speed_test; 
-		speed_test.test = ntohl(*thing);
-		float speedy = speed_test.speed;
-		return speedy;
+	};
+	union converter speed_test; 
+	speed_test.test = ntohl(*thing);
+	float speedy = speed_test.speed;
+	return speedy;
 }
 
 void print_zerg_header(struct zerg_header zerg)
@@ -111,14 +111,26 @@ uint64_t doub_flip(uint32_t *most, uint32_t *least)
 {
 
 		uint64_t flipped_double;
-		most = ntohl(most);
-		least = ntohl(least);
+		*most = ntohl(*most);
+		*least = ntohl(*least);
 
-		flipped_double = most;
+		flipped_double = *most;
 		flipped_double = flipped_double << 32;
-		flipped_double = flipped_double + least;
+		flipped_double = flipped_double + *least;
 
-		return doub_flip;
+		return flipped_double;
+}
+
+double doub_converter(uint64_t *number)
+{
+	union doub_converter{
+		double place_holder;
+		uint64_t old_number;
+	};
+	union doub_converter conversion;
+	conversion.old_number = *number;
+	double new_number = conversion.place_holder;
+	return new_number;
 }
 
 
