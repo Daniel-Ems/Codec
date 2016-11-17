@@ -110,18 +110,10 @@ int main(int argc, char *argv[])
 	printf("checksum %x\n", udp.checksum);
 
 
-/*
-	//int version = message.type;
-	printf("zerg header, size:%zd\n", sizeof(message));
-	printf("Version %x\n", message.version);
+
 	printf("type %d\n", type);
 	printf("total %d\n", total);
-	printf("source %x\n", message.source);
-	printf("destination %x\n", message.dest);
-	printf("id %x\n", ntohs(message.id));
-	//printf("payload %s\n", zerg -> zerg.name);
-	//printf("version %d\n", version);
-*/
+
 	
 	fclose(decode_file);
 }
