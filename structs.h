@@ -80,10 +80,23 @@ enum{zerg_header_length = 12};
 		uint32_t parameter_one : 16;
 		uint32_t parameter_two;
 	};
+
+	struct gps_data{
+		uint32_t long_first;
+		uint32_t long_second;
+		uint32_t lat_first;
+		uint32_t lat_second;
+		uint32_t altitude;
+		uint32_t bearing;
+		uint32_t speed;
+		uint32_t accuracy;
+	};
+
 	union payload {
 		struct status_payload status;
 		struct message name;
 		struct command_payload command;
+		struct gpes_data gps;
 	};
 
 void print_zerg_header(struct zerg_header header);
