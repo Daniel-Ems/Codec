@@ -7,8 +7,8 @@ LDLIBS += -lm
 
 
 
-BINARY = decoder
-OBJECT = decoder.o 
+BINARY = decode
+OBJECT = decode.o 
 
 $(BINARY):$(OBJECT)
 .PHONY: clean debug profile
