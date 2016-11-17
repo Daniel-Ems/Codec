@@ -34,9 +34,9 @@ void stat_payload(union payload *zerg)
 
 		//TODO: make a switch case that determines the type of the zerg
 		//(probably in a function)
-		printf("HP :%x/%x\n", zerg -> status.hit_armor, zerg-> status.max_type);
-		printf("type %x\n", type);
-		printf("Armor :%x\n", armor);
+		printf("HP :%d/%d\n", zerg -> status.hit_armor, zerg-> status.max_type);
+		printf("type %d\n", type);
+		printf("Armor :%d\n", armor);
 		printf("speed %f\n",speedy);
 		printf("name %s\n", zerg-> status.name);
 		free(zerg);
@@ -95,12 +95,12 @@ float converter(uint32_t *thing)
 void print_zerg_header(struct zerg_header zerg)
 {
 
-	zerg.version = zerg.version >> 28;
+	zerg.version = (zerg.version &0x10) >> 4;
 
-	printf("Version : %x\n", zerg.version);
-	printf("Sequence: %x\n", zerg.id);
-	printf("From    : %x\n", zerg.source);
-	printf("To      : %x\n", zerg.dest);
+	printf("Version : %d\n", zerg.version);
+	printf("Sequence: %d\n", ntohl(zerg.id));
+	printf("From    : %d\n", ntohs(zerg.source));
+	printf("To      : %d\n", ntohs(zerg.dest));
 }
 
 
