@@ -42,13 +42,13 @@ int main(int argc, char *argv[])
 	//TODO: Clean bit shifts and &'s perhaps put in a function
 	int type = message.version & 0x0f;
 	int total = message.version >> 24;
-	message.version = message.version >> 28; 
 
 	int ipv4_ihl = contents.version  & 0x0f;
 	int dscp = contents.version >> 10;
 	int ecn = contents.version >> 12;
 	contents.version = contents.version >> 4;
 
+	print_zerg_header(message);
 	zerged = struct_init(total, decode_file);
 	int zerg_header = type;
 		switch(zerg_header){
@@ -59,9 +59,7 @@ int main(int argc, char *argv[])
 				stat_payload(zerged);
 				break;
 			case(2):
-				//TODO: create a function that takes command instruction
 				com_payload(zerged);
-				//printf("Command Instruction\n");
 				break;
 			case(3):
 				printf("GPS Data\n");
@@ -112,7 +110,7 @@ int main(int argc, char *argv[])
 	printf("checksum %x\n", udp.checksum);
 
 
-
+/*
 	//int version = message.type;
 	printf("zerg header, size:%zd\n", sizeof(message));
 	printf("Version %x\n", message.version);
@@ -123,7 +121,7 @@ int main(int argc, char *argv[])
 	printf("id %x\n", ntohs(message.id));
 	//printf("payload %s\n", zerg -> zerg.name);
 	//printf("version %d\n", version);
-
+*/
 	
 	fclose(decode_file);
 }
