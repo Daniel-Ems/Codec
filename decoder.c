@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 			case(2):
 				//TODO: create a function that takes command instruction
 				com_payload(zerged);
-				printf("Command Instruction\n");
+				//printf("Command Instruction\n");
 				break;
 			case(3):
 				printf("GPS Data\n");
