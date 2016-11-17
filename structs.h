@@ -96,10 +96,10 @@ enum{zerg_header_length = 12};
 		struct status_payload status;
 		struct message name;
 		struct command_payload command;
-		struct gpes_data gps;
+		struct gps_data gps;
 	};
 
-void doub_converter(uint64_t *number);
+double doub_converter(uint64_t *number);
 uint64_t doub_flip(uint32_t *lat_long, uint32_t *long_lat);
 void print_zerg_header(struct zerg_header header);
 float converter(uint32_t *thing);
