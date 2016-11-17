@@ -16,7 +16,7 @@ union payload *struct_init(int total, FILE *decode_file)
 void messages(union payload *zerg)
 {
 
-		printf("Message:%s\n", zerg -> name.message);
+		printf("Message : %s\n", zerg -> name.message);
 		free(zerg);
 
 }
@@ -34,11 +34,12 @@ void stat_payload(union payload *zerg)
 
 		//TODO: make a switch case that determines the type of the zerg
 		//(probably in a function)
-		printf("HP :%d/%d\n", zerg -> status.hit_armor, zerg-> status.max_type);
-		printf("type %d\n", type);
-		printf("Armor :%d\n", armor);
-		printf("speed %f\n",speedy);
-		printf("name %s\n", zerg-> status.name);
+		printf("HP      : %d/%d\n", zerg -> status.hit_armor,
+				zerg-> status.max_type);
+		printf("type    : %d\n", type);
+		printf("Armor   : %d\n", armor);
+		printf("speed   : %f\n",speedy);
+		printf("name    : %s\n", zerg-> status.name);
 		free(zerg);
 } 
 
@@ -78,6 +79,7 @@ void com_payload(union payload *zerg)
 				printf("REPEAT %x\n", zerg->command.parameter_two);
 				break;
 		}
+	free(zerg);
 }
 
 float converter(uint32_t *thing)
@@ -102,5 +104,22 @@ void print_zerg_header(struct zerg_header zerg)
 	printf("From    : %d\n", ntohs(zerg.source));
 	printf("To      : %d\n", ntohs(zerg.dest));
 }
+
+
+//compliments of DOW 
+uint64_t doub_flip(uint32_t *most, uint32_t *least)
+{
+
+		uint64_t flipped_double;
+		most = ntohl(most);
+		least = ntohl(least);
+
+		flipped_double = most;
+		flipped_double = flipped_double << 32;
+		flipped_double = flipped_double + least;
+
+		return doub_flip;
+}
+
 
 
