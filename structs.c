@@ -30,13 +30,7 @@ void stat_payload(union payload *zerg)
 		//zerg -> status.speed = zerg -> status.speed;
 
 		//TODO: put in function, will need for longitude and latitude
- 		union converter{
-			float speed;
-			uint32_t test;
-		};
-		union converter speed_test; 
-		speed_test.test = ntohl(zerg->status.speed);
-		float speedy = speed_test.speed;
+ 		float speedy = converter(&zerg->status.speed);
 
 		//TODO: make a switch case that determines the type of the zerg
 		//(probably in a function)
@@ -48,13 +42,40 @@ void stat_payload(union payload *zerg)
 		free(zerg);
 } 
 
+/*
 void com_payload(union payload *zerg)
 {
-	if(sizeof(zerg) ==  sizeof(uint16_t)){
-		printf("Command : %x\n", zerg->command.command);
-	}else {
-		printf("Command : %x\n", zerg->command.command);
-		printf("This is a test\n");
-	}
+	uint32_t command = zerg->command.command;
+		switch(command)
+			case (0):
+				printf("GET_STATUS");
+				break;
+			case (1):
+				printf("GOTO")
+				break;
+			case (2):
+				break;
+			case (3):
+				break;
+			case (4):
+				break;
+			case (5):
+				break;
+			case (6):
+				break;
+			case (7):
+				break;
+}
+*/
+float converter(uint32_t *thing)
+{
+	union converter{
+			float speed;
+			uint32_t test;
+		};
+		union converter speed_test; 
+		speed_test.test = ntohl(*thing);
+		float speedy = speed_test.speed;
+		return speedy;
 }
 
