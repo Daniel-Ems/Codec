@@ -150,9 +150,9 @@ void gps(union payload *zerg)
 	double longitude = doub_converter(&lon);
 	if(longitude >= 1)
 	{
-		printf("longitude: %lf deg. W\n", longitude);
+		printf("longitude: %lf deg. E\n", longitude);
 	}else{
-		printf("longitude: %lf deg. E\n", longitude * (-1));
+		printf("longitude: %lf deg. W\n", longitude * (-1));
 	}
 
 	float altitude = converter(&zerg->gps.altitude);
