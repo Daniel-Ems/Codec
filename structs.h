@@ -78,7 +78,7 @@ enum{zerg_header_length = 12};
 	struct command_payload{
 		uint32_t command : 16;
 		uint32_t parameter_one : 16;
-		uint32_t paramter_two;
+		uint32_t parameter_two;
 	};
 	union payload {
 		struct status_payload status;
@@ -86,6 +86,7 @@ enum{zerg_header_length = 12};
 		struct command_payload command;
 	};
 
+float converter(uint32_t *thing);
 void com_payload(union payload *zerg);
 void stat_payload(union payload *zerg);
 void messages(union payload *zerg);
