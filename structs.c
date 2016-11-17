@@ -133,5 +133,27 @@ double doub_converter(uint64_t *number)
 	return new_number;
 }
 
+void gps(union payload *zerg)
+{
+	uint64_t lon = doub_flip(&zerg->gps.long_first, 
+						&zerg->gps.long_second);
+	uint64_t lat = doub_flip(&zerg->gps.lat_first,
+						&zerg->gps.lat_second);
+	double longitude = doub_converter(&lon);
+	double latitude = doub_converter(&lat);
+	float altitude = converter(&zerg->gps.altitude);
+	float bearing = converter(&zerg->gps.bearing);
+	float speed = converter(&zerg->gps.speed);
+	float accuracy = converter(&zerg->gps.accuracy);
+
+	printf("longitude: %lf\n", longitude);
+	printf("latitude : %lf\n", latitude);
+	printf("altitude : %f\n", altitude);
+	printf("bearing  : %f\n", bearing);
+	printf("speed    : %f\n", speed);
+	printf("accuracy : %f\n", accuracy);
+}
+
+
 
 
