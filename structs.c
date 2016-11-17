@@ -3,6 +3,66 @@
 
 
 
+const char *race(uint32_t type)
+{
+	const char *race = "No type";
+	switch(type){
+		case(0):
+			race = "Overmind";
+			break; 
+		case(1):
+			race = "Larva";
+			break;
+		case(2):
+			race = "Cerebrate";
+			break;
+		case(3):
+			race = "Overlord";
+			break;
+		case(4):
+			race = "Queen";
+			break;
+		case(5):
+			race = "Drone";
+			break;
+		case(6):
+			race = "Zergling";
+			break;
+		case(7):
+			race = "Lurker";
+			break;
+		case(8):
+			race = "Brooding";
+			break;
+		case(9):
+			race = "Hydralisk";
+			break;
+		case(10):
+			race = "Guardian";
+			break;
+		case(11):
+			race = "Scourge";
+			break;
+		case(12):
+			race = "Ultralisk";
+			break;
+		case(13):
+			race = "Mutalisk";
+			break;
+		case(14):
+			race = "Defiler";
+			break;
+		case(15):
+			race = "Devourer";
+			break;
+		default:
+			return race;
+			break;
+	
+	}
+return race;
+}
+
 union payload *struct_init(int total, FILE *decode_file)
 {
 		union payload *memory = calloc((total - zerg_header_length )+1,1);
@@ -27,18 +87,17 @@ void stat_payload(union payload *zerg)
 		zerg -> status.hit_armor = ntohl(zerg -> status.hit_armor) >> 8;
 		int32_t type = ntohl(zerg -> status.max_type) & 0xf;
 		zerg -> status.max_type = ntohl(zerg -> status.max_type) >> 8;
-		//zerg -> status.speed = zerg -> status.speed;
 
-		//TODO: put in function, will need for longitude and latitude
- 		float speedy = converter(&zerg->status.speed);
+		float speedy = converter(&zerg->status.speed);
 
-		//TODO: make a switch case that determines the type of the zerg
-		//(probably in a function)
+		const char *test;
+		test = race(type);
+
 		printf("HP      : %d/%d\n", zerg -> status.hit_armor,
 				zerg-> status.max_type);
-		printf("type    : %d\n", type);
+		printf("type    : %s\n", test);
 		printf("Armor   : %d\n", armor);
-		printf("speed   : %f\n",speedy);
+		printf("speed   : %fm/	s\n",speedy);
 		printf("name    : %s\n", zerg-> status.name);
 		free(zerg);
 } 
