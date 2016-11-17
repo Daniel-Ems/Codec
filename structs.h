@@ -99,6 +99,7 @@ enum{zerg_header_length = 12};
 		struct gps_data gps;
 	};
 
+const char *race(uint32_t type);
 double doub_converter(uint64_t *number);
 uint64_t doub_flip(uint32_t *lat_long, uint32_t *long_lat);
 void print_zerg_header(struct zerg_header header);
