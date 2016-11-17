@@ -92,3 +92,15 @@ float converter(uint32_t *thing)
 		return speedy;
 }
 
+void print_zerg_header(struct zerg_header zerg)
+{
+
+	zerg.version = zerg.version >> 28;
+
+	printf("Version : %x\n", zerg.version);
+	printf("Sequence: %x\n", zerg.id);
+	printf("From    : %x\n", zerg.source);
+	printf("To      : %x\n", zerg.dest);
+}
+
+
