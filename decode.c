@@ -21,9 +21,11 @@ int main(int argc, char *argv[])
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
+	int end_of_capture;
+	do{
+
 	struct pcap_packet_header pcap_header;
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
-
 	struct ethernet_header frame;
 	fread(&frame, sizeof(frame), 1, decode_file);
 
@@ -36,6 +38,7 @@ int main(int argc, char *argv[])
 	struct zerg_header message;
 	fread(&message, sizeof(message), 1, decode_file);
 
+	end_of_capture = (pcap_header.capture_length - 14 - contents.total_length);
 	 union payload *zerged;
 
 
@@ -63,12 +66,13 @@ int main(int argc, char *argv[])
 			case(3):
 				gps(zerged);
 				break;
-			}
+		}
 
+	}while(fseek(decode_file, end_of_capture + 1, SEEK_SET)); 
 
 	//TODO: debugging print statments for output
-	printf("type %x\n", type);
-	printf("total %d\n", total);
+	//printf("type %x\n", type);
+	//printf("total %d\n", total);
 
 	
 	fclose(decode_file);
