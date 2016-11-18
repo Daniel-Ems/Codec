@@ -21,30 +21,50 @@ int main(int argc, char *argv[])
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
+	size_t f_check;
 	int end_of_capture;
 	do{
 
 	struct pcap_packet_header pcap_header;
-	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+	f_check = fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+	if(f_check != 1)
+	{
+		break;
+	}
+
 	struct ethernet_header frame;
-	fread(&frame, sizeof(frame), 1, decode_file);
+	f_check = fread(&frame, sizeof(frame), 1, decode_file);
+	if(f_check != 1)
+	{
+		break;
+	}
 
 	struct ipv4_header contents;
-	fread(&contents, sizeof(contents), 1, decode_file);
+	f_check = fread(&contents, sizeof(contents), 1, decode_file);
+	if(f_check)
+	{
+		break;
+	}
 
 	struct udp_header udp;
-	fread(&udp, sizeof(udp), 1, decode_file);
+	f_check = fread(&udp, sizeof(udp), 1, decode_file);
+	{
+		break;
+	}
 
 	struct zerg_header message;
-	fread(&message, sizeof(message), 1, decode_file);
+	f_check = fread(&message, sizeof(message), 1, decode_file);
+	{
+		break;
+	}
 
-	end_of_capture = (pcap_header.capture_length - 14 - contents.total_length);
+	int total = message.version >> 24;
+	end_of_capture = (pcap_header.capture_length - 14 - 20 - 8 - total);
 	 union payload *zerged;
 
-
+	
 	//TODO: Clean bit shifts and &'s perhaps put in a function
 	int type = message.version & 0x0f;
-	int total = message.version >> 24;
 
 	contents.version = contents.version >> 4;
 
@@ -68,7 +88,7 @@ int main(int argc, char *argv[])
 				break;
 		}
 
-	}while(fseek(decode_file, end_of_capture + 1, SEEK_SET)); 
+	}while(!fseek(decode_file, end_of_capture, SEEK_CUR)); 
 
 	//TODO: debugging print statments for output
 	//printf("type %x\n", type);
