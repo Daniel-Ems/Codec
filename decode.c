@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 	rewind(decode_file);
 
 	struct pcap_file_header values;
+
 	fread(&values, sizeof(values), 1, decode_file);
 
 	//size_t f_check;
@@ -32,10 +33,12 @@ int main(int argc, char *argv[])
 	do{
 
 	struct pcap_packet_header pcap_header;
+
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
 	
 
 	struct ethernet_header frame;
+
 	fread(&frame, sizeof(frame), 1, decode_file);
 	
 
@@ -44,19 +47,19 @@ int main(int argc, char *argv[])
 	
 
 	struct udp_header udp;
+
 	fread(&udp, sizeof(udp), 1, decode_file);
 	
 
 	struct zerg_header message;
+
 	fread(&message, sizeof(message), 1, decode_file);
 	
 
 	int total = message.version >> 24;
-	end_of_capture = (pcap_header.capture_length - 14 - 20 - 8 - total);
+	end_of_capture = (pcap_header.capture_length - header_length - total);
 	 union payload *zerged;
 
-	
-	//TODO: Clean bit shifts and &'s perhaps put in a function
 	int type = message.version & 0x0f;
 
 	contents.version = contents.version >> 4;
@@ -80,44 +83,13 @@ int main(int argc, char *argv[])
 				gps(zerged);
 				break;
 		}
-	
+
 	fseek(decode_file, end_of_capture, SEEK_CUR);
 	new_pos = ftell(decode_file);
 
 	}while(new_pos != last_pos); 
 
-	//TODO: debugging print statments for output
-	//printf("type %x\n", type);
-	//printf("total %d\n", total);
-
-	
 	fclose(decode_file);
 }
-
-
-	//1) Add the ability to take two arguments (1."Encode" 2."Decode")
-	//2) "Decode" will have one additional argument, a file to be 		//    decoded.
-	//3) "Encode" Will have two additional arguments, a file to be 
-	//    encoded, and a file to store the encoded file in.
-	//4) Open a the first argument for reading. 
-	//5) Identify the file contains pcaps (strstr for d4 c3 b2 a1)
-	/* 
-		0) Message -> just a message starting at the 12th byte
-		1) Status Payload -> 3bytes of Hit pouint32_ts
-						  -> 1byte of Armor
-						  -> 3bytes of Max hit pouint32_ts 
-						  -> 1byte of type
-						  -> 4bytes of speed
-						  -> the remainder is the name
-		2) Command Payload -> 2bytes of command 
-						   -> 2bytes of parameter 1
-						   -> the reaminder is paramter 2
-		3) GPS Data Payload -> 4bytes Longitude
-							-> 4bytes Latitude
-							-> Altitude
-							-> Bearing
-							-> Speed
-							-> Accuracy
-	*/
 
 
