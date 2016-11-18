@@ -1,5 +1,5 @@
-#ifndef SORT_H
-#define SORT_H
+#ifndef STRUCTS_H
+#define STRUCTS_H
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -94,7 +94,7 @@ enum{header_length = 14+20+8};
 		struct gps_data gps;
 	};
 
-const char *race(uint32_t type);
+
 double doub_converter(uint64_t *number);
 uint64_t doub_flip(uint32_t *lat_long, uint32_t *long_lat);
 void print_zerg_header(struct zerg_header header);
