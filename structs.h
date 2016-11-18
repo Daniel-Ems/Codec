@@ -8,8 +8,13 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
+
+
+
 enum{zerg_header_length = 12};
+
 enum{header_length = 14+20+8};
+
 	struct pcap_file_header{ 
 		uint32_t file_type;
 		uint32_t major_version : 16;
@@ -94,16 +99,13 @@ enum{header_length = 14+20+8};
 		struct gps_data gps;
 	};
 
-
+union payload *struct_init(int total,FILE *decode_file);
 double doub_converter(uint64_t *number);
 uint64_t doub_flip(uint32_t *lat_long, uint32_t *long_lat);
-void print_zerg_header(struct zerg_header header);
+void print_zerg_header(struct zerg_header zerg);
 float converter(uint32_t *thing);
-void com_payload(union payload *zerg);
-void stat_payload(union payload *zerg);
-void messages(union payload *zerg);
+const char *race(uint32_t type);
 char *decode_message(int total, FILE *decode_file);
-union payload *memory(int total,FILE *decode_file);
  
 #endif
 
