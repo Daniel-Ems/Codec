@@ -7,23 +7,22 @@
 int main(int argc, char *argv[])
 {
 
-	FILE *decode_file;
-	//char *message_payload;
-	
+	FILE *decodeFile;
+
 	if(argc < 2)
 	{
 		printf("Please provide a file to be decoded\n");
 		return EX_USAGE;
 	}else{ 
-		decode_file = fopen(argv[1], "rb");
+		decodeFile = fopen(argv[1], "rb");
 	}
 
-	fseek(decode_file, 0, SEEK_END);
-	int last_pos = ftell(decode_file);
-	rewind(decode_file);
+	fseek(decodeFile, 0, SEEK_END);
+	int last_pos = ftell(decodeFile);
+	rewind(decodeFile);
 
-	struct pcap_file_header values;
-	fread(&values, sizeof(values), 1, decode_file);
+	struct FileHeader fh;
+	fread(&fh, sizeof(fh), 1, decodeFile);
 
 	//size_t f_check;
 	int end_of_capture;
@@ -31,58 +30,55 @@ int main(int argc, char *argv[])
 
 	do{
 
-	struct pcap_packet_header pcap_header;
-	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+	struct PcapHeader ph;
+	fread(&ph, sizeof(ph), 1, decodeFile);
 
-	struct ethernet_header frame;
-	fread(&frame, sizeof(frame), 1, decode_file);
+	struct EthernetFrame eh;
+	fread(&eh, sizeof(eh), 1, decodeFile);
 
-	struct ipv4_header contents;
-	fread(&contents, sizeof(contents), 1, decode_file);
+	struct Ipv4Header ip;
+	fread(&ip, sizeof(ip), 1, decodeFile);
 
-	struct udp_header udp;
-	fread(&udp, sizeof(udp), 1, decode_file);
-	
+	struct UdpHeader udp;
+	fread(&udp, sizeof(udp), 1, decodeFile);
 
-	struct zerg_header message;
+	struct ZergHeader zh;
+	fread(&zh, sizeof(zh), 1, decodeFile);
 
-	fread(&message, sizeof(message), 1, decode_file);
-	
+	int total = zh.version >> 24;
+	end_of_capture = (ph.capture_length - headerLength - total);
+	union PayloadStructs *zerged;
 
-	int total = message.version >> 24;
-	end_of_capture = (pcap_header.capture_length - header_length - total);
-	union payload *zerged;
+	int type = zh.version & 0x0f;
 
-	int type = message.version & 0x0f;
+	ip.version = ip.version >> 4;
 
-	contents.version = contents.version >> 4;
+	print_zerg_header(zh);
 
-	print_zerg_header(message);
-
-	zerged = struct_init(total, decode_file);
+	zerged = struct_init(total, decodeFile);
 
 	int zerg_header = type;
 		switch(zerg_header){
 			case(0):
-				messages(zerged);
+				messFunction(zerged);
 				break;
 			case(1):
-				stat_payload(zerged);
+				statFunction(zerged);
 				break;
 			case(2):
-				com_payload(zerged);
+				commFunction(zerged);
 				break;
 			case(3):
-				gps(zerged);
+				gpsFunction(zerged);
 				break;
 		}
 
-	fseek(decode_file, end_of_capture, SEEK_CUR);
-	new_pos = ftell(decode_file);
+	fseek(decodeFile, end_of_capture, SEEK_CUR);
+	new_pos = ftell(decodeFile);
 
 	}while(new_pos != last_pos); 
 
-	fclose(decode_file);
+	fclose(decodeFile);
 }
 
 
