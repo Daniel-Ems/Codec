@@ -1,13 +1,13 @@
 #include "structs.h"
 #include "pay_functions.h"
 
-union payload *struct_init(int total, FILE *decode_file)
+union PayloadStructs *struct_init(int total, FILE *decodeFile)
 {
-		union payload *memory = calloc((total - zerg_header_length +1 ),1);
+		union PayloadStructs *memory = calloc((total - zerg_header_length +1 ),1);
 		if(!memory){
 			printf("NO MALLOC");
 			}
-		fread(memory, total-zerg_header_length , 1, decode_file);
+		fread(memory, total-zerg_header_length , 1, decodeFile);
 		return memory;
 }
 
@@ -24,7 +24,7 @@ float converter(uint32_t *thing)
 	return speedy;
 }
 
-void print_zerg_header(struct zerg_header zerg)
+void print_zerg_header(struct ZergHeader zerg)
 {
 
 	zerg.version = (zerg.version &0x10) >> 4;
