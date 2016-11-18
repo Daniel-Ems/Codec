@@ -65,7 +65,7 @@ return race;
 
 union payload *struct_init(int total, FILE *decode_file)
 {
-		union payload *memory = calloc((total - zerg_header_length )+1,1);
+		union payload *memory = calloc((total - zerg_header_length +1 ),1);
 		if(!memory){
 			printf("NO MALLOC");
 			}
@@ -97,7 +97,7 @@ void stat_payload(union payload *zerg)
 				zerg-> status.max_type);
 		printf("type    : %s\n", test);
 		printf("Armor   : %d\n", armor);
-		printf("speed   : %fm/	s\n",speedy);
+		printf("speed   : %fm/gs\n",speedy);
 		printf("name    : %s\n", zerg-> status.name);
 		free(zerg);
 } 
