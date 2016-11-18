@@ -1,47 +1,47 @@
 #include "pay_functions.h"
 #include "structs.h"
 
-void messages(union payload *zerg)
+void messFunction(union PayloadStructs *zerg)
 {
 
-		printf("Message : %s\n", zerg -> name.message);
+		printf("Message : %s\n", zerg -> mess.message);
 		free(zerg);
 
 }
 
-void stat_payload(union payload *zerg)
+void statFunction(union PayloadStructs *zerg)
 {
-		uint32_t armor = zerg -> status.hit_armor &0xf;
-		zerg -> status.hit_armor = ntohl(zerg -> status.hit_armor) >> 8;
-		int32_t type = ntohl(zerg -> status.max_type) & 0xf;
-		zerg -> status.max_type = ntohl(zerg -> status.max_type) >> 8;
+		uint32_t armor = zerg -> stat.hit_armor &0xf;
+		zerg -> stat.hit_armor = ntohl(zerg -> stat.hit_armor) >> 8;
+		int32_t type = ntohl(zerg -> stat.max_type) & 0xf;
+		zerg -> stat.max_type = ntohl(zerg -> stat.max_type) >> 8;
 
-		float speedy = converter(&zerg->status.speed);
+		float speedy = converter(&zerg->stat.speed);
 
 		const char *test;
 		test = race(type);
 
-		printf("HP      : %d/%d\n", zerg -> status.hit_armor,
-				zerg-> status.max_type);
-		printf("type    : %s\n", test);
+		printf("Name    : %s\n", zerg-> stat.name);
+		printf("HP      : %d/%d\n", zerg -> stat.hit_armor,
+				zerg-> stat.max_type);
+		printf("Type    : %s\n", test);
 		printf("Armor   : %d\n", armor);
-		printf("speed   : %fm/gs\n",speedy);
-		printf("name    : %s\n", zerg-> status.name);
+		printf("Maxspeed: %fm/s\n",speedy);
 		free(zerg);
 }
 
-void com_payload(union payload *zerg)
+void commFunction(union PayloadStructs *zerg)
 {
-	uint32_t command = zerg->command.command;
+	uint32_t command = zerg->comm.command;
 		switch(command){
 			case (0):
 				printf("GET_STATUS\n");
 				break;
 			case (1):
 				printf("GOTO\n");
-				float location = converter(&zerg->command.parameter_two);
+				float location = converter(&zerg->comm.parameter_two);
 				printf("location %f\n", location);
-				printf("%x m\n", zerg->command.parameter_one);
+				printf("%x m\n", zerg->comm.parameter_one);
 				break;
 			case (2):
 				printf("GET_GPS\n");
@@ -51,24 +51,24 @@ void com_payload(union payload *zerg)
 				break;
 			case (5):
 				printf("SET_GROUP\n");
-				if(zerg->command.parameter_one)
+				if(zerg->comm.parameter_one)
 				{
-					printf("Add zerg to %x\n", zerg->command.parameter_two);
+					printf("Add zerg to %x\n", zerg->comm.parameter_two);
 				}else{
-					printf("Remove zerg from %x\n", zerg->command.parameter_two);
+					printf("Remove zerg from %x\n", zerg->comm.parameter_two);
 				}
 				break;
 			case (6):
 				printf("STOP\n");
 				break;
 			case (7):
-				printf("REPEAT %x\n", zerg->command.parameter_two);
+				printf("REPEAT %x\n", zerg->comm.parameter_two);
 				break;
 		}
 	free(zerg);
 }
 
-void gps(union payload *zerg)
+void gpsFunction(union PayloadStructs *zerg)
 {
 
 
