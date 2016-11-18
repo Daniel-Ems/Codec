@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
 	rewind(decode_file);
 
 	struct pcap_file_header values;
-
 	fread(&values, sizeof(values), 1, decode_file);
 
 	//size_t f_check;
@@ -33,21 +32,15 @@ int main(int argc, char *argv[])
 	do{
 
 	struct pcap_packet_header pcap_header;
-
 	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
-	
 
 	struct ethernet_header frame;
-
 	fread(&frame, sizeof(frame), 1, decode_file);
-	
 
 	struct ipv4_header contents;
 	fread(&contents, sizeof(contents), 1, decode_file);
-	
 
 	struct udp_header udp;
-
 	fread(&udp, sizeof(udp), 1, decode_file);
 	
 
@@ -58,7 +51,7 @@ int main(int argc, char *argv[])
 
 	int total = message.version >> 24;
 	end_of_capture = (pcap_header.capture_length - header_length - total);
-	 union payload *zerged;
+	union payload *zerged;
 
 	int type = message.version & 0x0f;
 
