@@ -8,11 +8,11 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
-extern union payload *zerg;
-void messages(union payload *zerg);
-void stat_payload(union payload *zerg);
-void com_payload(union payload *zerg);
-void gps(union payload *zerg);
+extern union PayloadStructs *zerg;
+void messFunction(union PayloadStructs *zerg);
+void statFunction(union PayloadStructs *zerg);
+void commFunction(union PayloadStructs *zerg);
+void gpsFunction(union PayloadStructs *zerg);
 
 
 #endif
