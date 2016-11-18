@@ -9,7 +9,7 @@
 #include <arpa/inet.h>
 
 enum{zerg_header_length = 12};
-	//TODO: Make this as a typdef and move to a header file
+enum{header_length = 14+20+8};
 	struct pcap_file_header{ 
 		uint32_t file_type;
 		uint32_t major_version : 16;
@@ -35,11 +35,8 @@ enum{zerg_header_length = 12};
 
 	struct ipv4_header{
 		uint32_t version : 16;
-		//uint32_t ihl : 4;
-		//nt32_t dscp : 8;
 		uint32_t total_length : 16;
 		uint32_t id : 16;
-		//uint32_t flags : 4;
 		uint32_t offset : 16;
 		uint32_t ttl : 8;
 		uint32_t protocol : 8;
@@ -57,8 +54,6 @@ enum{zerg_header_length = 12};
 
 	struct zerg_header{
 		uint32_t version;
-		//uint32_t type : 4;
-		//uint32_t total : 24;
 		uint32_t source : 16;
 		uint32_t dest : 16;
 		uint32_t id;
