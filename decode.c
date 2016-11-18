@@ -2,7 +2,7 @@
 #include <sysexits.h>
 
 #include "structs.h"
-#include "structs.c"
+#include "pay_functions.h"
 
 int main(int argc, char *argv[])
 {
