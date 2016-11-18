@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
 	FILE *decode_file;
 	//char *message_payload;
-
+	
 	if(argc < 2)
 	{
 		printf("Please provide a file to be decoded\n");
@@ -18,45 +18,38 @@ int main(int argc, char *argv[])
 		decode_file = fopen(argv[1], "rb");
 	}
 
+	fseek(decode_file, 0, SEEK_END);
+	int last_pos = ftell(decode_file);
+	rewind(decode_file);
+
 	struct pcap_file_header values;
 	fread(&values, sizeof(values), 1, decode_file);
 
-	size_t f_check;
+	//size_t f_check;
 	int end_of_capture;
+	int new_pos;
+
 	do{
 
 	struct pcap_packet_header pcap_header;
-	f_check = fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
-	if(f_check != 1)
-	{
-		break;
-	}
+	fread(&pcap_header, sizeof(pcap_header), 1, decode_file);
+	
 
 	struct ethernet_header frame;
-	f_check = fread(&frame, sizeof(frame), 1, decode_file);
-	if(f_check != 1)
-	{
-		break;
-	}
+	fread(&frame, sizeof(frame), 1, decode_file);
+	
 
 	struct ipv4_header contents;
-	f_check = fread(&contents, sizeof(contents), 1, decode_file);
-	if(f_check)
-	{
-		break;
-	}
+	fread(&contents, sizeof(contents), 1, decode_file);
+	
 
 	struct udp_header udp;
-	f_check = fread(&udp, sizeof(udp), 1, decode_file);
-	{
-		break;
-	}
+	fread(&udp, sizeof(udp), 1, decode_file);
+	
 
 	struct zerg_header message;
-	f_check = fread(&message, sizeof(message), 1, decode_file);
-	{
-		break;
-	}
+	fread(&message, sizeof(message), 1, decode_file);
+	
 
 	int total = message.version >> 24;
 	end_of_capture = (pcap_header.capture_length - 14 - 20 - 8 - total);
@@ -87,8 +80,11 @@ int main(int argc, char *argv[])
 				gps(zerged);
 				break;
 		}
+	
+	fseek(decode_file, end_of_capture, SEEK_CUR);
+	new_pos = ftell(decode_file);
 
-	}while(!fseek(decode_file, end_of_capture, SEEK_CUR)); 
+	}while(new_pos != last_pos); 
 
 	//TODO: debugging print statments for output
 	//printf("type %x\n", type);
