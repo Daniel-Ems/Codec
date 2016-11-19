@@ -18,13 +18,13 @@ void statFunction(union PayloadStructs *zerg)
 
 		float speedy = converter(&zerg->stat.speed);
 
-		const char *test;
-		test = race(type);
+		const char *race;
+		race = raceId(type);
 
 		printf("Name    : %s\n", zerg-> stat.name);
 		printf("HP      : %d/%d\n", zerg -> stat.hit_armor,
 				zerg-> stat.max_type);
-		printf("Type    : %s\n", test);
+		printf("Type    : %s\n", race);
 		printf("Armor   : %d\n", armor);
 		printf("Maxspeed: %fm/s\n",speedy);
 		free(zerg);
