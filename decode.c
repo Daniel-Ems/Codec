@@ -23,19 +23,23 @@ int main(int argc, char *argv[])
 	int start = ftell(decodeFile);
 	if(lastPos == start)
 	{
-		printf("Your file is empty, please give me a file with pcaps");
+		printf("Your file is empty, please give me a file with pcaps\n");
 		return EX_USAGE;
 	}
-	
-	
-	
-	size_t fCheck;
 
+	size_t fCheck;
 	struct FileHeader fh;
 	fCheck = fread(&fh, sizeof(fh), 1, decodeFile);
 	if(fCheck != 1)
 	{
 		fprintf(decodeFile,"Your file header was not read. Program terminated");
+		return EX_USAGE;
+	}
+	printf("%x\n", fh.fileType);
+	uint32_t fileCheck = 0xa1b2c3d4;
+	if(fh.fileType != fileCheck)
+	{
+		printf("You do not have a pcap file header\n");
 		return EX_USAGE;
 	}
 
