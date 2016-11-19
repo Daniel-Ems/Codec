@@ -20,30 +20,64 @@ int main(int argc, char *argv[])
 	fseek(decodeFile, 0, SEEK_END);
 	int lastPos = ftell(decodeFile);
 	rewind(decodeFile);
+	int start = ftell(decodeFile);
+	if(lastPos == start)
+	{
+		printf("Your file is empty, please give me a file with pcaps");
+		return EX_USAGE;
+	}
+	
+	
+	
+	size_t fCheck;
 
 	struct FileHeader fh;
-	fread(&fh, sizeof(fh), 1, decodeFile);
+	fCheck = fread(&fh, sizeof(fh), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		fprintf(decodeFile,"Your file header was not read. Program terminated");
+		return EX_USAGE;
+	}
 
-	//size_t f_check;
 	int padding;
 	int nextPos;
 
 	do{
 
 	struct PcapHeader ph;
-	fread(&ph, sizeof(ph), 1, decodeFile);
+	fCheck = fread(&ph, sizeof(ph), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		break;
+	}
 
 	struct EthernetFrame eh;
-	fread(&eh, sizeof(eh), 1, decodeFile);
+	fCheck = fread(&eh, sizeof(eh), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		break;
+	}
 
 	struct Ipv4Header ip;
-	fread(&ip, sizeof(ip), 1, decodeFile);
+	fCheck = fread(&ip, sizeof(ip), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		break;
+	}
 
 	struct UdpHeader udp;
-	fread(&udp, sizeof(udp), 1, decodeFile);
+	fCheck = fread(&udp, sizeof(udp), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		break;
+	}
 
 	struct ZergHeader zh;
-	fread(&zh, sizeof(zh), 1, decodeFile);
+	fCheck = fread(&zh, sizeof(zh), 1, decodeFile);
+	if(fCheck != 1)
+	{
+		break;
+	}
 
 	int total = zh.version >> 24;
 	padding = (ph.captureLength - headerLength - total);
