@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <sysexits.h>
-
+#include <sys/stat.h>
 #include "structs.h"
 #include "pay_functions.h"
 
@@ -35,11 +35,19 @@ int main(int argc, char *argv[])
 		fprintf(decodeFile,"Your file header was not read. Program terminated");
 		return EX_USAGE;
 	}
-	printf("%x\n", fh.fileType);
-	uint32_t fileCheck = 0xa1b2c3d4;
-	if(fh.fileType != fileCheck)
+
+	uint32_t magicNumber = 0xa1b2c3d4;
+	if(fh.fileType != magicNumber)
 	{
-		printf("You do not have a pcap file header\n");
+		printf("Wrong Endianess or no pcap\n");
+		return EX_USAGE;
+	}
+
+
+	uint32_t linkCheck = 0x1;
+	if(fh.linkLayer != linkCheck)
+	{
+		printf("Wrong link layer\n");
 		return EX_USAGE;
 	}
 
@@ -47,7 +55,6 @@ int main(int argc, char *argv[])
 	int nextPos;
 
 	do{
-
 	struct PcapHeader ph;
 	fCheck = fread(&ph, sizeof(ph), 1, decodeFile);
 	if(fCheck != 1)
@@ -55,6 +62,7 @@ int main(int argc, char *argv[])
 		break;
 	}
 
+	
 	struct EthernetFrame eh;
 	fCheck = fread(&eh, sizeof(eh), 1, decodeFile);
 	if(fCheck != 1)
@@ -84,7 +92,16 @@ int main(int argc, char *argv[])
 	}
 
 	int total = zh.version >> 24;
-	padding = (ph.captureLength - headerLength - total);
+
+	//Error Checking. 
+	size_t lengthCheck = etherIpUdp + total;
+	if(ph.packetLength < lengthCheck)
+	{
+		printf("Your file is corrupt: packet length is too short");
+		return EX_USAGE;
+	}
+
+	padding = (ph.captureLength - etherIpUdp - total);
 	union PayloadStructs *zerged;
 
 	int type = zh.version & 0x0f;
