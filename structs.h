@@ -13,23 +13,24 @@
 
 enum{zerg_header_length = 12};
 
-enum{headerLength = 14+20+8};
+enum{etherIpUdp = 14+20+8};
+
 
 	struct FileHeader{ 
-		uint32_t file_type;
-		uint32_t major_version : 16;
-		uint32_t minor_version : 16;
-		uint32_t gmt_offset;
-		uint32_t accuracy_delta;
-		uint32_t maximum_length;
-		uint32_t link_layer;
+		uint32_t fileType;
+		uint32_t majorVersion : 16;
+		uint32_t minorVersion : 16;
+		uint32_t gmtOffset;
+		uint32_t accuracyDelta;
+		uint32_t maximumLength;
+		uint32_t linkLayer;
 	};
 
 	struct PcapHeader{
-		uint32_t unix_epoch; 
-		uint32_t epoch_microseconds;
-		uint32_t capture_length;
-		uint32_t packet_length;
+		uint32_t unixEpoch; 
+		uint32_t epochMicroseconds;
+		uint32_t captureLength;
+		uint32_t packetLength;
 	};
 
 	struct EthernetFrame{
@@ -104,7 +105,7 @@ double doub_converter(uint64_t *number);
 uint64_t doub_flip(uint32_t *lat_long, uint32_t *long_lat);
 void print_zerg_header(struct ZergHeader zerg);
 float converter(uint32_t *thing);
-const char *race(uint32_t type);
+const char *raceId(uint32_t type);
 char *decode_message(int total, FILE *decode_file);
  
 #endif
