@@ -63,65 +63,67 @@ double doub_converter(uint64_t *number)
 	return new_number;
 }
 
-const char *race(uint32_t type)
+const char *raceId(uint32_t type)
 {
-	const char *race = "No type";
+	const char *raceId = "No type";
 	switch(type){
 		case(0):
-			race = "Overmind";
+			raceId = "Overmind";
 			break; 
 		case(1):
-			race = "Larva";
+			raceId = "Larva";
 			break;
 		case(2):
-			race = "Cerebrate";
+			raceId = "Cerebrate";
 			break;
 		case(3):
-			race = "Overlord";
+			raceId = "Overlord";
 			break;
 		case(4):
-			race = "Queen";
+			raceId = "Queen";
 			break;
 		case(5):
-			race = "Drone";
+			raceId = "Drone";
 			break;
 		case(6):
-			race = "Zergling";
+			raceId = "Zergling";
 			break;
 		case(7):
-			race = "Lurker";
+			raceId = "Lurker";
 			break;
 		case(8):
-			race = "Brooding";
+			raceId = "Brooding";
 			break;
 		case(9):
-			race = "Hydralisk";
+			raceId = "Hydralisk";
 			break;
 		case(10):
-			race = "Guardian";
+			raceId = "Guardian";
 			break;
 		case(11):
-			race = "Scourge";
+			raceId = "Scourge";
 			break;
 		case(12):
-			race = "Ultralisk";
+			raceId = "Ultralisk";
 			break;
 		case(13):
-			race = "Mutalisk";
+			raceId = "Mutalisk";
 			break;
 		case(14):
-			race = "Defiler";
+			raceId = "Defiler";
 			break;
 		case(15):
-			race = "Devourer";
+			raceId = "Devourer";
 			break;
 		default:
-			return race;
+			return raceId;
 			break;
 	
 	}
-return race;
+return raceId;
 }
+
+
 
 
 
