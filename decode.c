@@ -18,15 +18,15 @@ int main(int argc, char *argv[])
 	}
 
 	fseek(decodeFile, 0, SEEK_END);
-	int last_pos = ftell(decodeFile);
+	int lastPos = ftell(decodeFile);
 	rewind(decodeFile);
 
 	struct FileHeader fh;
 	fread(&fh, sizeof(fh), 1, decodeFile);
 
 	//size_t f_check;
-	int end_of_capture;
-	int new_pos;
+	int padding;
+	int nextPos;
 
 	do{
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	fread(&zh, sizeof(zh), 1, decodeFile);
 
 	int total = zh.version >> 24;
-	end_of_capture = (ph.capture_length - headerLength - total);
+	padding = (ph.captureLength - headerLength - total);
 	union PayloadStructs *zerged;
 
 	int type = zh.version & 0x0f;
@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
 				break;
 		}
 
-	fseek(decodeFile, end_of_capture, SEEK_CUR);
-	new_pos = ftell(decodeFile);
+	fseek(decodeFile, padding, SEEK_CUR);
+	nextPos = ftell(decodeFile);
 
-	}while(new_pos != last_pos); 
+	}while(nextPos != lastPos); 
 
 	fclose(decodeFile);
 }
