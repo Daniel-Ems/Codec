@@ -16,22 +16,49 @@ int main (int argc, char *argv[])
 		encodeFile = fopen(argv[1], "rb");
 	}
 
+//This handles the first four lines of the file
+//TODO: put in a four loop and clean
 	char tmpBuff [64];
-	char values[64] = "\0";
-	size_t i;
-	size_t a = 0;
 	for(size_t count = 0; count < 4; count++)
 	{
 		fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
-		for (i = 0; i < strlen(tmpBuff); i++)
-		{
-			if(isdigit(tmpBuff[i]))
-			{
-				values[a] = tmpBuff[i];
-				a++;
-			}
-		}
-		printf("%s\n", values);
-		a = 0;
+		strtok(tmpBuff, " ");
+		char *token = strtok(NULL, "\n");
+		printf("%s\n", token);
+	}
+
+	fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
+	strtok(tmpBuff, ":");
+	
+	//TODO to lower function
+	size_t i;
+	int type;
+	for( i = 0; i < strlen(tmpBuff); i++)
+ 	{
+		tmpBuff[i]=tolower(tmpBuff[i]);
+	}
+
+	i = 0;
+	if(strcmp(tmpBuff, "message")==0)
+	{
+		type = 0;
+		printf("%d\n", type);
+	}
+	else if(strcmp(tmpBuff, "name") ==0)
+	{
+		type = 1;
+		printf("%d\n", type);
+	}
+	else if(strncmp(tmpBuff, "get",3) == 0)
+	{
+		type = 3;
+		printf("%d\n", type);
+	}
+	else if(strcmp(tmpBuff, "latitude") == 0)
+	{
+		type = 4;
+		printf("%d\n", type);
 	}
 }
+
+
