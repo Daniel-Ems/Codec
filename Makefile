@@ -5,26 +5,29 @@ CFLAGS+=-std=c11
 CFLAGS+=-g
 LDLIBS += -lm
 
+all= decode encode
+
+bins: $(all)
+
+decode: decode.o structs.o pay_functions.o 
+encode: encode.o
 
 
-BINARY = decode
-OBJECT = decode.o structs.o pay_functions.o
 
-$(BINARY):$(OBJECT)
 .PHONY: clean debug profile
 
-$(BINARY): 
+
 
 debug: CLFAGS+=-g
-debug: $(BINARY)
+debug: $(bins)
 
 profile: CFLAGS+=-pg
 profile: LDFLAGS+=-pg
-profile: $(BINARY)
+profile: $(bins)
 
 
 clean:
-	$(RM) $(BINARY) $(OBJECT)
+	$(RM) $(bins) 
 
 
 
