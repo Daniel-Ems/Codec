@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 		fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
 		strtok(tmpBuff, " ");
 		char *token = strtok(NULL, "\n");
-		printf("%s\n", token);
+		printf("%d\n",token);
 	}
 
 	fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
@@ -47,7 +47,7 @@ int main (int argc, char *argv[])
 	else if(strcmp(tmpBuff, "name") ==0)
 	{
 		type = 1;
-		printf("%d\n", type);
+		printf("%x\n", type);
 	}
 	else if(strncmp(tmpBuff, "get",3) == 0)
 	{
