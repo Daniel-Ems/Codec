@@ -59,8 +59,20 @@ int main (int argc, char *argv[])
 
 	fwrite(&ef, sizeof(ef), 1, writeFile);
 
+	struct Ipv4Header ih;
+	ih.versionIhl = 0x45;
+	ih.dscpEcn = 0x00;
+	ih.total_length = 0x1234;
+	ih.id = 0x00000000;
+	ih.offset = 0x000016;
+	ih.ttl = 0x0011;
+	ih.protocol = 0x11;
+	ih.checksum = 0x1234;
+	ih.s_ip = 0x87654321;
+	ih.d_ip = 0x12345678;
 
-
+	fwrite(&ih, sizeof(ih), 1, writeFile);
+ 	
 
 
 
