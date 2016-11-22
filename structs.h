@@ -33,9 +33,10 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t packetLength;
 	};
 
-	struct EthernetFrame{
-		char d_mac[6];
-		char s_mac[6];
+	
+	struct __attribute__((packed)) EthernetFrame{
+		uint64_t d_mac : 48;
+		uint64_t s_mac : 48;
 		uint16_t type;
 	};
 
