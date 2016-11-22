@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 	int lastPos = ftell(decodeFile);
 	rewind(decodeFile);
 	int start = ftell(decodeFile);
+
 	if(lastPos == start)
 	{
 		printf("Your file is empty, please give me a file with pcaps\n");
@@ -102,11 +103,14 @@ int main(int argc, char *argv[])
 	}
 
 	padding = (ph.captureLength - etherIpUdp - total);
+	printf("%d\n", padding);
+	printf("%d\n", ph.captureLength);
 	union PayloadStructs *zerged;
 
 	int type = zh.version & 0x0f;
 
-	ip.version = ip.version >> 4;
+	ip.versionIhl = ip.versionIhl >> 4;
+	printf("%x\n", ip.versionIhl);
 
 	print_zerg_header(zh);
 
