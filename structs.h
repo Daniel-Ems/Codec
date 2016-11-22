@@ -37,11 +37,12 @@ enum{etherIpUdp = 14+20+8};
 	struct __attribute__((packed)) EthernetFrame{
 		uint64_t d_mac : 48;
 		uint64_t s_mac : 48;
-		uint16_t type;
+		uint32_t type : 16;
 	};
 
-	struct Ipv4Header{
-		uint32_t version : 16;
+	struct __attribute__((packed)) Ipv4Header{
+		uint32_t versionIhl : 8;
+		uint32_t dscpEcn : 8;
 		uint32_t total_length : 16;
 		uint32_t id : 16;
 		uint32_t offset : 16;
