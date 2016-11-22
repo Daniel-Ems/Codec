@@ -72,7 +72,22 @@ int main (int argc, char *argv[])
 	ih.d_ip = 0x12345678;
 
 	fwrite(&ih, sizeof(ih), 1, writeFile);
- 	
+
+	struct UdpHeader uh;
+	uh.s_port = 0x1111;
+	uh.d_port = 0x2222;
+	uh.length = 0x3333;
+	uh.checksum = 0x4444;
+
+	fwrite(&uh, sizeof(uh), 1, writeFile);
+
+	struct ZergHeader zh;
+	zh.version = 0x12345678;
+	zh.source = 0x1234;
+	zh.dest = 0x4321;
+	zh.id = 0x87654321;
+
+	fwrite(&zh,sizeof(zh),1, writeFile);
 
 
 
