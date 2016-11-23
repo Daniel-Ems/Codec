@@ -5,7 +5,7 @@ CFLAGS+=-std=c11
 CFLAGS+=-g
 LDLIBS += -lm
 
-all= decode encode
+all=decode encode
 
 bins: $(all)
 
@@ -13,8 +13,8 @@ decode: decode.o structs.o pay_functions.o
 encode: encode.o
 
 
-
 .PHONY: clean debug profile
+
 
 
 
@@ -27,7 +27,7 @@ profile: $(bins)
 
 
 clean:
-	$(RM) $(bins) 
+	$(RM) $(all) 
 
 
 
