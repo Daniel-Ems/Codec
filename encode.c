@@ -21,27 +21,28 @@ int main (int argc, char *argv[])
 		writeFile = fopen(argv[2], "wb");
 	}
 
+	int fileStart = ftell(encodeFile);
 	fseek(encodeFile, 0, SEEK_END);
-	int fileSize = ftell(encodeFile);
+	int fileEnd= ftell(encodeFile);
 	rewind(encodeFile);
-	printf("%zd", sizeof(fileSize));
+
+	printf("End: %d\n", fileEnd);
+	printf("Start: %d\n", fileStart);
+
+	
 
 //This handles the first four lines of the file
 //TODO: put in a four loop and clean
 
-	int *values;
-	char tmpBuff [64];
 
-	values = malloc(4 * sizeof(int));
-	for(size_t count = 0; count < 4; count++)
+	char *tmpBuff = calloc(1, fileEnd);
+
+	for(int count = 0; count < fileEnd ; count++)
 	{
-		fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
-		strtok(tmpBuff, " ");
-		char *token = strtok(NULL, "\n");
-		values [count] = strtol(token, NULL, 10);
-		printf("%d\n", values[count]);
+		tmpBuff[count] = fgetc(encodeFile);
+		printf("%d\n", tmpBuff[count]);
 	}
-	printf("%x\n", values[0]);
+	//printf("%x\n", values[0]);
 
 	struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
@@ -125,7 +126,7 @@ int main (int argc, char *argv[])
 		printf("%d\n", type);
 	}
 
-
+/*
 	struct ZergHeader zh;
 	zh.version = values[0];
 	zh.type = type;
@@ -133,7 +134,7 @@ int main (int argc, char *argv[])
 	zh.source = htons(values[2]);
 	zh.dest = htons(values[3]);
 	zh.id = htonl(values[1]);
-
-	fwrite(&zh,sizeof(zh),1, writeFile);
-	free(values);
+*/
+	//fwrite(&zh,sizeof(zh),1, writeFile);
+	free(tmpBuff);
 }
