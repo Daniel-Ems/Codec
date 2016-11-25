@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <sysexits.h>
 #include <sys/stat.h>
@@ -36,13 +37,33 @@ int main (int argc, char *argv[])
 
 
 	char *tmpBuff = calloc(1, fileEnd);
+	char *values = calloc(1, fileEnd);
 
 	for(int count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
-		printf("%d\n", tmpBuff[count]);
+		printf("%c", tmpBuff[count]);
 	}
-	//printf("%x\n", values[0]);
+
+
+	char *Version = strcasestr(tmpBuff, "to");
+	int a = 0;
+	int b = 0;
+	while(!isdigit(Version[a]))
+	{
+		printf("%c\n", Version[a]);
+		a++;
+	}
+	while(isdigit(Version[a]))
+	{
+		values[b] = Version[a];
+		printf("%d\n", values[b]);
+		b++;
+		a++;
+	}
+	strtol(values, NULL, 10);
+	printf("%s\n", values);
+
 
 	struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
@@ -92,10 +113,6 @@ int main (int argc, char *argv[])
 	fwrite(&uh, sizeof(uh), 1, writeFile);
 
 
-
-	fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
-	strtok(tmpBuff, ":");
-
 	//TODO to lower function
 	size_t i;
 	int type;
@@ -136,5 +153,6 @@ int main (int argc, char *argv[])
 	zh.id = htonl(values[1]);
 */
 	//fwrite(&zh,sizeof(zh),1, writeFile);
+	free(values);
 	free(tmpBuff);
 }
