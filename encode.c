@@ -21,21 +21,30 @@ int main (int argc, char *argv[])
 		writeFile = fopen(argv[2], "wb");
 	}
 
+	fseek(encodeFile, 0, SEEK_END);
+	int fileSize = ftell(encodeFile);
+	rewind(encodeFile);
+	printf("%zd", sizeof(fileSize));
+
 //This handles the first four lines of the file
 //TODO: put in a four loop and clean
+
+	int *values;
 	char tmpBuff [64];
+
+	values = malloc(4 * sizeof(int));
 	for(size_t count = 0; count < 4; count++)
 	{
 		fgets(tmpBuff, sizeof(tmpBuff), encodeFile);
 		strtok(tmpBuff, " ");
 		char *token = strtok(NULL, "\n");
-		printf("%d\n", *token);
+		values [count] = strtol(token, NULL, 10);
+		printf("%d\n", values[count]);
 	}
-
+	printf("%x\n", values[0]);
 
 	struct FileHeader fh;
-	fh.fileType = 0xa1b2c3d4; 
-	fh.majorVersion = 0x0002;
+	fh.fileType = 0xa1b2c3d4;
 	fh.minorVersion = 0x0004;
 	fh.gmtOffset = 0x00000000;
 	fh.accuracyDelta = 0x00000000;
@@ -47,7 +56,7 @@ int main (int argc, char *argv[])
 	struct PcapHeader ph;
 	ph.unixEpoch = 0x00000000;
 	ph.epochMicroseconds = 0x00000000;
-	ph.captureLength = 0x11111111;
+	ph.captureLength = 0x11111111; //not good
 	ph.packetLength = 0x00000000;
 
 	fwrite(&ph, sizeof(ph), 1, writeFile);
@@ -55,18 +64,18 @@ int main (int argc, char *argv[])
 	struct EthernetFrame ef;
 	ef.d_mac = 0x000000000000;
 	ef.s_mac = 0x111111111111;
-	ef.type = 0x0008;
+	ef.type = 0x0008; 
 
 	fwrite(&ef, sizeof(ef), 1, writeFile);
 
 	struct Ipv4Header ih;
-	ih.versionIhl = 0x45;
-	ih.dscpEcn = 0x00;
-	ih.total_length = 0x1234;
+	ih.versionIhl = 0x45; 
+	ih.dscpEcn = 0x00; 
+	ih.total_length = 0x1234; //not good
 	ih.id = 0x00000000;
 	ih.offset = 0x000016;
 	ih.ttl = 0x0011;
-	ih.protocol = 0x11;
+	ih.protocol = 0x11; //not good
 	ih.checksum = 0x1234;
 	ih.s_ip = 0x87654321;
 	ih.d_ip = 0x12345678;
@@ -75,35 +84,11 @@ int main (int argc, char *argv[])
 
 	struct UdpHeader uh;
 	uh.s_port = 0x1111;
-	uh.d_port = 0x2222;
-	uh.length = 0x3333;
+	uh.d_port = 0x2222; //not good
+	uh.length = 0x3333; //not good
 	uh.checksum = 0x4444;
 
 	fwrite(&uh, sizeof(uh), 1, writeFile);
-
-	struct ZergHeader zh;
-	zh.version = 0x12345678;
-	zh.source = 0x1234;
-	zh.dest = 0x4321;
-	zh.id = 0x87654321;
-
-	fwrite(&zh,sizeof(zh),1, writeFile);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -139,6 +124,16 @@ int main (int argc, char *argv[])
 		type = 4;
 		printf("%d\n", type);
 	}
+
+
+	struct ZergHeader zh;
+	zh.version = values[0];
+	zh.type = type;
+	zh.length = 0x123456;
+	zh.source = htons(values[2]);
+	zh.dest = htons(values[3]);
+	zh.id = htonl(values[1]);
+
+	fwrite(&zh,sizeof(zh),1, writeFile);
+	free(values);
 }
-
-
