@@ -13,7 +13,7 @@ int main (int argc, char *argv[])
 
 	if(argc < 3)
 	{
-		printf("Please provide a file to be encoded, and to be written too\n");
+		printf("Please provide a file to be encoded, and to be 				written too\n");
 		return EX_USAGE;
 	}
 	else
@@ -22,20 +22,11 @@ int main (int argc, char *argv[])
 		writeFile = fopen(argv[2], "wb");
 	}
 
-	int fileStart = ftell(encodeFile);
 	fseek(encodeFile, 0, SEEK_END);
 	int fileEnd= ftell(encodeFile);
 	rewind(encodeFile);
 
-	printf("End: %d\n", fileEnd);
-	printf("Start: %d\n", fileStart);
-
-	
-
-//This handles the first four lines of the file
-//TODO: put in a four loop and clean
-
-
+	//This mallocs for a tmpbuff and a permanent buff
 	char *tmpBuff = calloc(1, fileEnd);
 	char *values = calloc(1, fileEnd);
 
@@ -48,14 +39,34 @@ int main (int argc, char *argv[])
 	char *Version = strcasestr(tmpBuff, "Version");
 	int a = 0;
 	int b = 0;
+
 	printf("%s\n", Version);
+
 	while(!isdigit(Version[a]))
 	{
-		a++;
+		Version++;
 	}
 	while(isdigit(Version[a]))
 	{
 		values[b] = Version[a];
+		b++;
+		a++;
+	}
+	strtol(values, NULL, 10);
+	printf("%s\n", values);
+
+	char *second = strcasestr(Version, "Version");
+
+	printf("second str str, %s\n", second);
+	a = 0;
+	b = 0;
+	while(!isdigit(second[a]))
+	{
+		second++;
+	}
+	while(isdigit(second[a]))
+	{
+		values[b] = second[a];
 		b++;
 		a++;
 	}
