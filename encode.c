@@ -42,22 +42,20 @@ int main (int argc, char *argv[])
 	for(int count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
-		printf("%c", tmpBuff[count]);
 	}
 
-
-	char *Version = strcasestr(tmpBuff, "to");
+	//TODO: Turn into function in order to use as a get value ,fms
+	char *Version = strcasestr(tmpBuff, "Version");
 	int a = 0;
 	int b = 0;
+	printf("%s\n", Version);
 	while(!isdigit(Version[a]))
 	{
-		printf("%c\n", Version[a]);
 		a++;
 	}
 	while(isdigit(Version[a]))
 	{
 		values[b] = Version[a];
-		printf("%d\n", values[b]);
 		b++;
 		a++;
 	}
