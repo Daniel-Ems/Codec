@@ -9,7 +9,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-int getVal(char *tmpBuff, const char *search);
+int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
+char *getPayload(char *tmpBuff, char *payload);
 
 #endif
