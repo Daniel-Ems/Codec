@@ -7,6 +7,12 @@
 #include <string.h>
 #include <stdint.h>
 #include <arpa/inet.h>
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <sysexits.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <ctype.h>
 
 
 
