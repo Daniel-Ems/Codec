@@ -55,7 +55,6 @@ int main (int argc, char *argv[])
 	
 	printf("%s\n", tmpBuff);
 	int a = 0;
-
 	while(isalpha(*tmpBuff))
 	{
 		payload[a] = *tmpBuff;
@@ -67,6 +66,7 @@ int main (int argc, char *argv[])
 		tmpBuff++;
 	}
 	printf("%s\n", tmpBuff);
+
 	//TODO to lower function
 
 	int type;
