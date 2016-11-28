@@ -109,8 +109,8 @@ int main(int argc, char *argv[])
 
 	int type = zh.version & 0x0f;
 
-	ip.versionIhl = ip.versionIhl >> 4;
-	printf("%x\n", ip.versionIhl);
+	ip.version = ip.version >> 4;
+	printf("%x\n", ip.version);
 
 	print_zerg_header(zh);
 
