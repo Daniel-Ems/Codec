@@ -13,7 +13,7 @@ int main (int argc, char *argv[])
 
 	if(argc < 3)
 	{
-		printf("Please provide a file to be encoded, and to be 				written too\n");
+		printf("Please provide a file to be encoded, and to be written too\n");
 		return EX_USAGE;
 	}
 	else
@@ -37,42 +37,49 @@ int main (int argc, char *argv[])
 
 	//TODO: Turn into function in order to use as a get value ,fms
 	char *Version = strcasestr(tmpBuff, "Version");
-	int a = 0;
-	int b = 0;
 
 	printf("%s\n", Version);
 
-	while(!isdigit(Version[a]))
+	while(!isdigit(*Version))
 	{
 		Version++;
 	}
-	while(isdigit(Version[a]))
+	while(isdigit(*Version))
 	{
-		values[b] = Version[a];
-		b++;
-		a++;
+		*values = *Version;
+		values++;
+		Version++;
 	}
-	strtol(values, NULL, 10);
-	printf("%s\n", values);
+	values--;
+	int ver = strtol(values, NULL, 10);
+	printf("%d\n", ver);
 
-	char *second = strcasestr(Version, "Version");
 
-	printf("second str str, %s\n", second);
-	a = 0;
-	b = 0;
-	while(!isdigit(second[a]))
+	char *version = strcasestr(Version, "Version");
+	if (!version)
 	{
-		second++;
+		printf("There is only one capture\n");
+		
 	}
-	while(isdigit(second[a]))
+	else
 	{
-		values[b] = second[a];
-		b++;
-		a++;
-	}
-	strtol(values, NULL, 10);
-	printf("%s\n", values);
 
+		printf("second strstr, %s\n", version);
+		while(!isdigit(*version))
+		{
+			version++;
+		}
+		while(isdigit(*version))
+		{
+			values++;
+			*values = *version;
+			values++;
+			version++;
+		}
+	}
+	values --;
+	int ver2 = strtol(values, NULL, 10);
+	printf("%d\n", ver2);
 
 	struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
@@ -100,8 +107,7 @@ int main (int argc, char *argv[])
 	fwrite(&ef, sizeof(ef), 1, writeFile);
 
 	struct Ipv4Header ih;
-	ih.versionIhl = 0x45; 
-	ih.dscpEcn = 0x00; 
+	ih.version = 0x45; 
 	ih.total_length = 0x1234; //not good
 	ih.id = 0x00000000;
 	ih.offset = 0x000016;
@@ -121,7 +127,7 @@ int main (int argc, char *argv[])
 
 	fwrite(&uh, sizeof(uh), 1, writeFile);
 
-
+/*
 	//TODO to lower function
 	size_t i;
 	int type;
@@ -151,7 +157,7 @@ int main (int argc, char *argv[])
 		type = 4;
 		printf("%d\n", type);
 	}
-
+*/
 /*
 	struct ZergHeader zh;
 	zh.version = values[0];
@@ -162,6 +168,7 @@ int main (int argc, char *argv[])
 	zh.id = htonl(values[1]);
 */
 	//fwrite(&zh,sizeof(zh),1, writeFile);
+	values--;
 	free(values);
 	free(tmpBuff);
 }
