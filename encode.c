@@ -29,6 +29,7 @@ int main (int argc, char *argv[])
 	//This mallocs for a tmpbuff and a permanent buff
 	char *tmpBuff = calloc(1, fileEnd);
 	char *values = calloc(1, fileEnd);
+	char *tmpPoint = values;
 
 	for(int count = 0; count < fileEnd ; count++)
 	{
@@ -169,6 +170,6 @@ int main (int argc, char *argv[])
 */
 	//fwrite(&zh,sizeof(zh),1, writeFile);
 	values--;
-	free(values);
+	free(tmpPoint);
 	free(tmpBuff);
 }
