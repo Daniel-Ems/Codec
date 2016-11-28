@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "structs.h"
+#include "encode_function.h"
 
 int main (int argc, char *argv[])
 {
@@ -37,26 +38,12 @@ int main (int argc, char *argv[])
 	}
 
 	//TODO: Turn into function in order to use as a get value ,fms
-	char *Version = strcasestr(tmpBuff, "Version");
-
-	printf("%s\n", Version);
-
-	while(!isdigit(*Version))
-	{
-		Version++;
-	}
-	while(isdigit(*Version))
-	{
-		*values = *Version;
-		values++;
-		Version++;
-	}
-	values--;
-	int ver = strtol(values, NULL, 10);
+	const char *search = "Version";
+	int ver = getVal(tmpBuff, search );
 	printf("%d\n", ver);
 
-
-	char *version = strcasestr(Version, "Version");
+/*
+	char *version = strcasestr(tmpBuff, "Version");
 	if (!version)
 	{
 		printf("There is only one capture\n");
@@ -81,7 +68,7 @@ int main (int argc, char *argv[])
 	values --;
 	int ver2 = strtol(values, NULL, 10);
 	printf("%d\n", ver2);
-
+*/
 	struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
 	fh.minorVersion = 0x0004;
@@ -169,7 +156,7 @@ int main (int argc, char *argv[])
 	zh.id = htonl(values[1]);
 */
 	//fwrite(&zh,sizeof(zh),1, writeFile);
-	values--;
+
 	free(tmpPoint);
 	free(tmpBuff);
 }
