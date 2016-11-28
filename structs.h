@@ -17,6 +17,7 @@ enum{etherIpUdp = 14+20+8};
 
 
 	struct FileHeader{ 
+
 		uint32_t fileType;
 		uint32_t majorVersion : 16;
 		uint32_t minorVersion : 16;
