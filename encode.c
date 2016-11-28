@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
 	//TODO: Turn into function in order to use as a get value ,fms
 
 	int headerValues[4];
-	const char *headerFields[4] = {"Version", "Encode","To", "From"};
+	const char *headerFields[4] = {"Version", "Sequence","To", "From"};
 
 	for(int a = 0; a < 4; a++)
 	{
