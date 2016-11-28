@@ -30,17 +30,19 @@ int main (int argc, char *argv[])
 	//This mallocs for a tmpbuff and a permanent buff
 	char *tmpBuff = calloc(1, fileEnd);
 	char *values = calloc(1, fileEnd);
-	char *tmpPoint = values;
+
 
 	for(int count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
 	}
 
+	//printf("%s\n", tmpBuff);
 	//TODO: Turn into function in order to use as a get value ,fms
 	const char *search = "Version";
-	int ver = getVal(tmpBuff, search );
+	int ver = getVal(tmpBuff, search);
 	printf("%d\n", ver);
+	//printf("%s\n", tmpBuff);
 
 /*
 	char *version = strcasestr(tmpBuff, "Version");
@@ -71,13 +73,15 @@ int main (int argc, char *argv[])
 */
 	struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
-	fh.minorVersion = 0x0004;
-	fh.gmtOffset = 0x00000000;
-	fh.accuracyDelta = 0x00000000;
-	fh.maximumLength = 0x00000000;
-	fh.linkLayer = 0x00000001;
+	fh.majorVersion = 2;
+	fh.minorVersion = 4;
+	fh.gmtOffset = 0;
+	fh.accuracyDelta = 0;
+	fh.maximumLength = 0;
+	fh.linkLayer = 1;
 
-	fwrite(&fh, sizeof(fh), 1, writeFile);
+	//printf("%zd", sizeof(struct FileHeader));
+	fwrite(&fh, sizeof(struct FileHeader), 1, writeFile);
 
 	struct PcapHeader ph;
 	ph.unixEpoch = 0x00000000;
@@ -157,6 +161,8 @@ int main (int argc, char *argv[])
 */
 	//fwrite(&zh,sizeof(zh),1, writeFile);
 
-	free(tmpPoint);
+	fclose(encodeFile);
+	fclose(writeFile);
+	free(values);
 	free(tmpBuff);
 }
