@@ -39,39 +39,19 @@ int main (int argc, char *argv[])
 
 	//printf("%s\n", tmpBuff);
 	//TODO: Turn into function in order to use as a get value ,fms
-	const char *search = "Version";
-	int ver = getVal(tmpBuff, search);
-	printf("%d\n", ver);
+
+	int headerValues[4];
+	const char *headerFields[4] = {"Version", "Encode","To", "From"};
+
+	for(int a = 0; a < 4; a++)
+	{
+		headerValues[a] = getVal(tmpBuff, headerFields[a]);
+		printf("%d\n", headerValues[a]);
+	}
+
+
 	//printf("%s\n", tmpBuff);
-
-/*
-	char *version = strcasestr(tmpBuff, "Version");
-	if (!version)
-	{
-		printf("There is only one capture\n");
-		
-	}
-	else
-	{
-
-		printf("second strstr, %s\n", version);
-		while(!isdigit(*version))
-		{
-			version++;
-		}
-		while(isdigit(*version))
-		{
-			values++;
-			*values = *version;
-			values++;
-			version++;
-		}
-	}
-	values --;
-	int ver2 = strtol(values, NULL, 10);
-	printf("%d\n", ver2);
-*/
-	struct FileHeader fh;
+struct FileHeader fh;
 	fh.fileType = 0xa1b2c3d4;
 	fh.majorVersion = 2;
 	fh.minorVersion = 4;
