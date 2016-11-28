@@ -10,7 +10,7 @@ all=decode encode
 bins: $(all)
 
 decode: decode.o structs.o pay_functions.o 
-encode: encode.o
+encode: encode.o encode_function.o 
 
 
 .PHONY: clean debug profile
@@ -19,7 +19,7 @@ encode: encode.o
 
 
 debug: CLFAGS+=-g
-debug: $(bins)
+debug: $(all)
 
 profile: CFLAGS+=-pg
 profile: LDFLAGS+=-pg
