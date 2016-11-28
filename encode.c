@@ -50,32 +50,9 @@ int main (int argc, char *argv[])
 		printf("%d\n", headerValues[a]);
 	}
 
-	printf("%p\n", tmpBuff);
-	//TODO: Remove this statement and properly walk the pointer, talk to liam
-	//for help resolving the issue:
-/*
-	for( int a = 0; a < 43; a++)
-	{
-		tmpBuff++;
-	}
-*/
 	printf("%s\n", tmpBuff);
 
-	int a = 0;
-	while(!isalpha(*tmpBuff))
-	{
-		tmpBuff++;
-	}
-	while(isalpha(*tmpBuff))
-	{
-		payload[a] = *tmpBuff;
-		a++;
-		tmpBuff++;
-	}
-	while(!isalnum(*tmpBuff))
-	{
-		tmpBuff++;
-	}
+	tmpBuff = getPayload(tmpBuff, payload);
 
 	printf("%s\n", tmpBuff);
 
