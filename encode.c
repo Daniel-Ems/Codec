@@ -30,7 +30,9 @@ int main (int argc, char *argv[])
 	rewind(encodeFile);
 
 	char *tmpBuff = calloc(1, fileEnd+1);
-
+	char *payload = calloc(1, fileEnd+1);
+	char *tmpPayload = payload;
+	char *tmpPointer = tmpBuff;
 	printf("%p\n", tmpBuff);
 	for(size_t count = 0; count < fileEnd ; count++)
 	{
@@ -46,37 +48,40 @@ int main (int argc, char *argv[])
 		printf("%d\n", headerValues[a]);
 	}
 
-	for( int a = 0; a < 42; a ++)
+	for( int a = 0; a < 43; a++)
 	{
 		tmpBuff++;
 	}
 	
 	printf("%s\n", tmpBuff);
-	char *payload;
-	
-	while(isalpha(tmpBuff))
+	int a = 0;
+
+	while(isalpha(*tmpBuff))
 	{
-		*payload = *tmpBuff;
-		payload++;
+		payload[a] = *tmpBuff;
+		a++;
 		tmpBuff++;
 	}
+	while(!isalnum(*tmpBuff))
+	{
+		tmpBuff++;
+	}
+	printf("%s\n", tmpBuff);
 	//TODO to lower function
-	size_t i;
-	int type;
-	
 
-	i = 0;
-	if(strncmp(tmpBuff, "message",7))
+	int type;
+
+	if(strncmp(payload, "message",7)==0)
 	{
 		type = 0;
 		printf("%d\n", type);
 	}
-	else if(strncmp(tmpBuff, "name",4))
+	else if(strncmp(payload, "name",4)==0)
 	{
 		type = 1;
 		printf("%x\n", type);
 	}
-	else if(strncmp(tmpBuff, "latitude",8))
+	else if(strncmp(payload, "latitude",8)==0)
 	{
 		type = 4;
 		printf("%d\n", type);
@@ -88,8 +93,8 @@ int main (int argc, char *argv[])
 	}
 
 
-
-	free(tmpBuff);
+	free(tmpPayload);
+	free(tmpPointer);
 	fclose(encodeFile);
 	fclose(writeFile);
 }
