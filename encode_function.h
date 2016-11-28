@@ -10,5 +10,6 @@
 #include <stdlib.h>
 
 int getVal(char *tmpBuff, const char *search);
+int getType(char *payload);
 
 #endif
