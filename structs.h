@@ -41,8 +41,7 @@ enum{etherIpUdp = 14+20+8};
 	};
 
 	struct __attribute__((packed)) Ipv4Header{
-		uint32_t versionIhl : 8;
-		uint32_t dscpEcn : 8;
+		uint32_t version : 16;
 		uint32_t total_length : 16;
 		uint32_t id : 16;
 		uint32_t offset : 16;
@@ -60,7 +59,7 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t checksum : 16;
 	};
 
-	struct ZergHeader{
+	struct __attribute__((packed)) ZergHeader{
 		uint32_t version;
 		uint32_t source : 16;
 		uint32_t dest : 16;
