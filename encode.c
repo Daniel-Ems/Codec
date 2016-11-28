@@ -30,31 +30,42 @@ int main (int argc, char *argv[])
 	rewind(encodeFile);
 
 	char *tmpBuff = calloc(1, fileEnd+1);
+	char *tmpPointer = tmpBuff;
+
 	char *payload = calloc(1, fileEnd+1);
 	char *tmpPayload = payload;
-	char *tmpPointer = tmpBuff;
-	printf("%p\n", tmpBuff);
+
 	for(size_t count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
 	}
 
+	printf("%p\n", tmpBuff);
 	int headerValues[4];
-	const char *headerFields[4] = {"Version", "Sequence","To", "From"};
+	const char *headerFields[4] = {"Version", "Sequence","From", "To" };
 
 	for(int a = 0; a < 4; a++)
 	{
-		headerValues[a] = getVal(tmpBuff, headerFields[a]);
+		headerValues[a] = getVal(&tmpBuff, headerFields[a]);
 		printf("%d\n", headerValues[a]);
 	}
 
+	printf("%p\n", tmpBuff);
+	//TODO: Remove this statement and properly walk the pointer, talk to liam
+	//for help resolving the issue:
+/*
 	for( int a = 0; a < 43; a++)
 	{
 		tmpBuff++;
 	}
-	
+*/
 	printf("%s\n", tmpBuff);
+
 	int a = 0;
+	while(!isalpha(*tmpBuff))
+	{
+		tmpBuff++;
+	}
 	while(isalpha(*tmpBuff))
 	{
 		payload[a] = *tmpBuff;
@@ -65,6 +76,7 @@ int main (int argc, char *argv[])
 	{
 		tmpBuff++;
 	}
+
 	printf("%s\n", tmpBuff);
 
 	int type = getType(payload);
