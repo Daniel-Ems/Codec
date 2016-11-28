@@ -30,10 +30,10 @@ int main (int argc, char *argv[])
 	rewind(encodeFile);
 
 	char *tmpBuff = calloc(1, fileEnd+1);
-	char *tmpPointer = tmpBuff;
+	char *buffPointer = tmpBuff;
 
 	char *payload = calloc(1, fileEnd+1);
-	char *tmpPayload = payload;
+	char *payloadPointer = payload;
 
 	for(size_t count = 0; count < fileEnd ; count++)
 	{
@@ -50,17 +50,53 @@ int main (int argc, char *argv[])
 		printf("%d\n", headerValues[a]);
 	}
 
-	printf("%s\n", tmpBuff);
-
+	//TODO: this gets you to the beginning value of your payload.
 	tmpBuff = getPayload(tmpBuff, payload);
+	printf("%s%s\n", payload,tmpBuff);
+	//TODO: From here, you need to begin to process your payloads.
+	printf("before: %p\n", tmpBuff);
 
-	printf("%s\n", tmpBuff);
 
 	int type = getType(payload);
+
+		int typeCase = type;
+		switch(typeCase){
+			case(0):
+				printf("Its a message\n");
+				break;
+			case(1):
+				printf("Its a stat\n");
+				break;
+			case(2):
+				printf("Its a Comm\n");
+				break;
+			case(3):
+				printf("Its a gps\n");
+				break;
+		}
 	printf("%d\n", type);
 
-	free(tmpPayload);
-	free(tmpPointer);
+	payload = tmpBuff;
+	char *new = strcasestr(tmpBuff, "Version");
+	printf("after :%p\n", payload);
+	printf("new :%p\n", new);
+
+	int remainder = new - payload;
+	printf("%s\n", payload);
+	printf("remainder: %d\n", remainder); 
+	for(int a = 0; a < remainder; a++)
+	{
+		*payload = *tmpBuff;
+		payload++;
+		tmpBuff++;
+	}
+
+
+	printf("payload: %s\n", payload);
+	printf("tmpBuff : %s\n", tmpBuff);
+
+	free(payloadPointer);
+	free(buffPointer);
 	fclose(encodeFile);
 	fclose(writeFile);
 }
