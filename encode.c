@@ -40,7 +40,6 @@ int main (int argc, char *argv[])
 		tmpBuff[count] = fgetc(encodeFile);
 	}
 
-	printf("%p\n", tmpBuff);
 	int headerValues[4];
 	const char *headerFields[4] = {"Version", "Sequence","From", "To" };
 
@@ -52,12 +51,13 @@ int main (int argc, char *argv[])
 
 	//TODO: this gets you to the beginning value of your payload.
 	tmpBuff = getPayload(tmpBuff, payload);
-	printf("%s%s\n", payload,tmpBuff);
-	//TODO: From here, you need to begin to process your payloads.
-	printf("before: %p\n", tmpBuff);
-
 
 	int type = getType(payload);
+
+	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
+	char *packetPointer = packetCapture;
+
+	printf("packetCapture %s\n", packetCapture);
 
 		int typeCase = type;
 		switch(typeCase){
@@ -76,25 +76,7 @@ int main (int argc, char *argv[])
 		}
 	printf("%d\n", type);
 
-	payload = tmpBuff;
-	char *new = strcasestr(tmpBuff, "Version");
-	printf("after :%p\n", payload);
-	printf("new :%p\n", new);
-
-	int remainder = new - payload;
-	printf("%s\n", payload);
-	printf("remainder: %d\n", remainder); 
-	for(int a = 0; a < remainder; a++)
-	{
-		*payload = *tmpBuff;
-		payload++;
-		tmpBuff++;
-	}
-
-
-	printf("payload: %s\n", payload);
-	printf("tmpBuff : %s\n", tmpBuff);
-
+	free(packetPointer);
 	free(payloadPointer);
 	free(buffPointer);
 	fclose(encodeFile);
