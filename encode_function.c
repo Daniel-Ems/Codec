@@ -64,11 +64,12 @@ char *getPayload(char *tmpBuff,char *payload)
 char *getPacket(char *tmpBuff, char *payload, size_t fileEnd)
 	{
 		char *tmpCapture = calloc(1,fileEnd + 1);
+		int a;
 		if((payload = strcasestr(tmpBuff, "Version")))
 		{
 			int remainder = payload - tmpBuff;
 
-			for(int a = 0; a < remainder; a++)
+			for(a = 0; a < remainder; a++)
 			{
 				tmpCapture[a] = *tmpBuff;
 				tmpBuff++;
@@ -76,7 +77,7 @@ char *getPacket(char *tmpBuff, char *payload, size_t fileEnd)
 		}
 		else
 		{
-	 	tmpCapture = tmpBuff;
+			memcpy(tmpCapture,tmpBuff, strlen(tmpBuff));
 		}
 		return tmpCapture;
 	}
