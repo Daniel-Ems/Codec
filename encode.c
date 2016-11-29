@@ -4,6 +4,9 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "structs.h"
 #include "encode_function.h"
 #include "encode_structs.c"
@@ -14,6 +17,17 @@ int main (int argc, char *argv[])
 	FILE *encodeFile;
 	FILE *writeFile;
 
+	struct stat *buf = malloc( sizeof(*buf));
+	stat(argv[1], buf);
+
+	off_t fileEnd = buf->st_size;
+	if(fileEnd ==0)
+	{
+		return EX_USAGE;
+	}
+
+	printf("fileEnd %zd\n", fileEnd); 
+
 	if(argc < 3)
 	{
 		printf("Please provide a file to be encoded, and to be written too\n");
@@ -22,12 +36,16 @@ int main (int argc, char *argv[])
 	else
 	{ 
 		encodeFile = fopen(argv[1], "rb");
+		if(!encodeFile)
+		{
+			return EX_USAGE;
+		}
 		writeFile = fopen(argv[2], "wb");
+		if(!writeFile)
+		{
+			return EX_USAGE;
+		}
 	}
-
-	fseek(encodeFile, 0, SEEK_END);
-	size_t fileEnd= ftell(encodeFile);
-	rewind(encodeFile);
 
 	char *tmpBuff = calloc(1, fileEnd+1);
 	char *buffPointer = tmpBuff;
@@ -35,7 +53,7 @@ int main (int argc, char *argv[])
 	char *payload = calloc(1, fileEnd+1);
 	char *payloadPointer = payload;
 
-	for(size_t count = 0; count < fileEnd ; count++)
+	for(int count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
 	}
@@ -62,7 +80,7 @@ int main (int argc, char *argv[])
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
-				printf("Its a message\n");
+				//while(isalpha;
 				break;
 			case(1):
 				printf("Its a stat\n");
@@ -76,6 +94,7 @@ int main (int argc, char *argv[])
 		}
 	printf("%d\n", type);
 
+	free(buf);
 	free(packetPointer);
 	free(payloadPointer);
 	free(buffPointer);
