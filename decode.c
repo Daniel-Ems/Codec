@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
 		return EX_USAGE;
 	}else{ 
 		decodeFile = fopen(argv[1], "rb");
+		if(!decodeFile)
+		{
+			return EX_USAGE;
+		}
 	}
 
 	fseek(decodeFile, 0, SEEK_END);
