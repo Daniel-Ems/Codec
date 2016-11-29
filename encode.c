@@ -50,6 +50,7 @@ int main (int argc, char *argv[])
 	char *tmpBuff = calloc(1, fileEnd+1);
 	char *buffPointer = tmpBuff;
 
+
 	char *payload = calloc(1, fileEnd+1);
 	char *payloadPointer = payload;
 
@@ -60,8 +61,8 @@ int main (int argc, char *argv[])
 
 	int headerValues[4];
 	const char *headerFields[4] = {"Version", "Sequence","From", "To" };
-
-	for(int a = 0; a < 4; a++)
+	int a;
+	for( a = 0; a < 4; a++)
 	{
 		headerValues[a] = getVal(&tmpBuff, headerFields[a]);
 		printf("%d\n", headerValues[a]);
@@ -72,18 +73,68 @@ int main (int argc, char *argv[])
 
 	int type = getType(payload);
 
-	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
+	char * packetCapture = getPacket(tmpBuff, payload, fileEnd);
 	char *packetPointer = packetCapture;
 
 	printf("packetCapture %s\n", packetCapture);
 
+	char *name = calloc(1, fileEnd + 1);
+	char *newName = name;
+
+		a = 0;
+		while(!isalnum(*packetCapture))
+		{
+			packetCapture++;
+		}
+		while(isalnum(*packetCapture))
+		{
+			name[a] = *packetCapture;
+			packetCapture++;
+			a++;
+		}
+
+	printf("name :%s\n", name);
+	const char *statFields[4] = {"HP", "TYPE", "ARMOR", "MAXSPEED"};
+	int b;
+
+
+		packetCapture = strcasestr(packetCapture, "hp");
+			while(!isdigit(*packetCapture))
+			{
+				packetCapture++;
+			}
+			while(isdigit(*packetCapture))
+			{
+				name[a] = *packetCapture;
+				packetCapture++;
+				a++;
+			}
+			while(!isdigit(*packetCapture))
+			{
+				name[a] = *packetCapture;
+				packetCapture++;
+				a++;
+			}
+			while(isdigit(*packetCapture))
+			{
+				name[a] = *packetCapture;
+				packetCapture++;
+				a++;
+			}
+		printf("%s\n", name);
+
+		packetCapture = strcasestr(packetCapture, "hp");
+		
+
+
+	puts("\n");
+	printf("packet: %s\n", packetCapture);
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
-				//while(isalpha;
+				
 				break;
 			case(1):
-				printf("Its a stat\n");
 				break;
 			case(2):
 				printf("Its a Comm\n");
@@ -94,6 +145,7 @@ int main (int argc, char *argv[])
 		}
 	printf("%d\n", type);
 
+	free(newName);
 	free(buf);
 	free(packetPointer);
 	free(payloadPointer);
