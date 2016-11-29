@@ -12,5 +12,6 @@
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 char *getPayload(char *tmpBuff, char *payload);
+char *getPacket(char *tmpBuff, char *payload, size_t fileEnd);
 
 #endif
