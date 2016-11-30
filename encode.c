@@ -177,7 +177,14 @@ int main (int argc, char *argv[])
 		cp.parameter_two = strtol(packetCapture,NULL,10);
 		fwrite(&cp, sizeof(cp), 1, writeFile);
 	}
-	
+	else if(command == 7)
+	{
+		cp.command = htons(command);
+		notdigit(&packetCapture);
+		cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
+		cp.parameter_one = 0x0000;
+		fwrite(&cp, sizeof(cp), 1, writeFile);
+	}
 
 
 	printf("packetCapture%s\n", packetCapture);
