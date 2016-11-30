@@ -117,10 +117,7 @@ int main (int argc, char *argv[])
 			esp.hitPoints = strtol(name, NULL, 10);
 			printf("hitPoints: %d\n", esp.hitPoints);
 			a=0;
-			while(!isdigit(*packetCapture))
-			{
-				packetCapture++;
-			}
+			notdigit(&packetCapture);
 			esp.maxPoints = strtol(packetCapture, NULL, 10);
 			printf("maxPoints: %d\n", esp.maxPoints);
 
@@ -137,12 +134,14 @@ int main (int argc, char *argv[])
 		printf("type: %d\n", z);
 
 		packetCapture = strcasestr(packetCapture, "Armor");
-		while(!isdigit(*packetCapture))
-		{
-			packetCapture++;
-		}
+		notdigit(&packetCapture);
 		esp.armor = strtol(packetCapture, NULL, 10);
-		printf("armor: %d", esp.armor);
+		printf("armor: %d\n", esp.armor);
+
+		packetCapture = strcasestr(packetCapture, "maxspeed");
+		notdigit(&packetCapture);
+		esp.speed = strtol(packetCapture, NULL, 10);
+		printf("Speed: %d\n", esp.speed);
 		
 	puts("\n");
 	printf("packet: %s\n", packetCapture);
