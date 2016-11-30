@@ -1,5 +1,6 @@
 #include "pay_functions.h"
 #include "structs.h"
+#include <stdbool.h>
 
 void messFunction(union PayloadStructs *zerg)
 {
@@ -32,7 +33,8 @@ void statFunction(union PayloadStructs *zerg)
 
 void commFunction(union PayloadStructs *zerg)
 {
-	uint32_t command = zerg->comm.command;
+	uint32_t command = ntohs(zerg->comm.command);
+
 		switch(command){
 			case (0):
 				printf("GET_STATUS\n");
@@ -53,7 +55,7 @@ void commFunction(union PayloadStructs *zerg)
 				printf("SET_GROUP\n");
 				if(zerg->comm.parameter_one)
 				{
-					printf("Add zerg to %x\n", zerg->comm.parameter_two);
+					printf("Add zerg to %d\n", zerg->comm.parameter_two);
 				}else{
 					printf("Remove zerg from %x\n", zerg->comm.parameter_two);
 				}
