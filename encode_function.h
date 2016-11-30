@@ -15,8 +15,8 @@
 #include <sys/stat.h>
 #include "structs.h"
 
-FILE *fileHeader(FILE *writeFile);
-FILE *ethernetHeader(FILE *writeFile);
+void fileHeader(FILE *writeFile);
+void ethernetHeader(FILE *writeFile);
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 void getPayload(char **packerCapture,int type);
