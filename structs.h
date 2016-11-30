@@ -80,6 +80,15 @@ enum{etherIpUdp = 14+20+8};
 			char name[1];
 		};
 
+	struct __attribute__((packed)) EncodeStatusPacket{
+		uint32_t hitPoints : 24;
+		uint32_t armor : 8;
+		uint32_t maxPoints : 24;
+		uint32_t type : 8;
+		uint32_t speed ;
+		char *name;
+	};
+
 	struct MessagePacket{
 			char message[1];
 	};
