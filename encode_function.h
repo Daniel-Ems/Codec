@@ -14,8 +14,6 @@
 #include <sysexits.h>
 #include <sys/stat.h>
 
-
-
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 char *getPayload(char *tmpBuff, char *payload);
