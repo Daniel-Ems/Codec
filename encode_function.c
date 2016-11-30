@@ -12,21 +12,25 @@ int getVal(char **tmpBuff, const char *search)
 
 		}
 		ver = strtol(*tmpBuff,NULL, 10);
+		while(isdigit(**tmpBuff))
+		{
+			(*tmpBuff)++;
+		}
 		return ver;
 	}
 
-int getType(char *payload)
+int getType(char *packetCapture)
 	{
 		int type;
-		if(strncmp(payload, "message",7)==0)
+		if(strcasestr(packetCapture, "message"))
 		{
 			type = 0;
 		}
-		else if(strncmp(payload, "name",4)==0)
+		else if(strcasestr(packetCapture, "name"))
 		{
 			type = 1;
 		}
-		else if(strncmp(payload, "latitude",8)==0)
+		else if(strcasestr(packetCapture, "latitude"))
 		{
 			type = 3;
 		}
@@ -37,28 +41,30 @@ int getType(char *payload)
 		return type;
 	}
 
-char *getPayload(char *tmpBuff,char *payload)
-	{	
-
-		while(!isalpha(*tmpBuff))
+void getPayload(char **packetCapture, int type)
+	{
+		if(type == 2)
 		{
-			tmpBuff++;
+			while(!isalpha(**packetCapture))
+			{
+				(*packetCapture)++;
+			}
 		}
-		while(isalpha(*tmpBuff))
+		else
 		{
-			*payload = *tmpBuff;
-			payload++;
-			tmpBuff++;
+			while(!isalpha(**packetCapture))
+			{
+				(*packetCapture)++;
+			}
+			while(isalpha(**packetCapture))
+			{
+				(*packetCapture)++;
+			}
+			while(!isalnum(**packetCapture))
+			{
+				(*packetCapture)++;
+			}
 		}
-		
-		while(!isalnum(*tmpBuff))
-		{
-			*payload = *tmpBuff;
-			payload++;
-			tmpBuff++;
-		}
-		
-		return tmpBuff;
 	}
 
 char *getPacket(char *tmpBuff, char *payload, off_t fileEnd)
