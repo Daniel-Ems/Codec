@@ -61,9 +61,9 @@ char *getPayload(char *tmpBuff,char *payload)
 		return tmpBuff;
 	}
 
-char *getPacket(char *tmpBuff, char *payload, size_t fileEnd)
+char *getPacket(char *tmpBuff, char *payload, off_t fileEnd)
 	{
-		char *tmpCapture = calloc(1,fileEnd + 1);
+		char *tmpCapture = calloc(1, fileEnd + 1);
 		int a;
 		if((payload = strcasestr(tmpBuff, "Version")))
 		{
@@ -77,9 +77,16 @@ char *getPacket(char *tmpBuff, char *payload, size_t fileEnd)
 		}
 		else
 		{
-			memcpy(tmpCapture,tmpBuff, strlen(tmpBuff));
+			memcpy(tmpCapture, tmpBuff, strlen(tmpBuff));
 		}
 		return tmpCapture;
 	}
 
+void notdigit(char **packetCapture)
+	{
+	while(!isdigit(**packetCapture))
+		{
+			(*packetCapture)++;
+		}
+	}
 
