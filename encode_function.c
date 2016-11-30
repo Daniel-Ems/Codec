@@ -109,7 +109,7 @@ uint32_t convertInt(float tmpNum)
 	return maxSpeed;
 	}
 
-FILE *fileHeader(FILE *writeFile)
+void fileHeader(FILE *writeFile)
 	{
 		struct FileHeader fh;
 		fh.fileType = 0xa1b2c3d4;
@@ -120,11 +120,11 @@ FILE *fileHeader(FILE *writeFile)
 		fh.maximumLength = 0;
 		fh.linkLayer = 1;
 
-		fwrite(&fh, sizeof(struct FileHeader), 1, writeFile);
-		return writeFile;
+		fwrite(&fh, sizeof(fh), 1, writeFile);
+		return;
 	}
 
-FILE *ethernetHeader(FILE *writeFile)
+void ethernetHeader(FILE *writeFile)
 	{
 		struct EthernetFrame ef;
 		ef.d_mac = 0x000000000000;
@@ -132,6 +132,6 @@ FILE *ethernetHeader(FILE *writeFile)
 		ef.type = 0x0008; 
 
 		fwrite(&ef, sizeof(ef), 1, writeFile);
-		return writeFile;
+		return;
 	}
 
