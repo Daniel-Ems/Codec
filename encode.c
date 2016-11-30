@@ -71,13 +71,10 @@ int main (int argc, char *argv[])
 	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
 	char *packetPointer = packetCapture;
 
-	printf("tmpBuff:%s\n", tmpBuff);
 	int type = getType(packetCapture);
 	getPayload(&packetCapture,type);
-	printf("tmpBuff:%s\n", tmpBuff);
-	printf("packetCapturer:%s\n", packetCapture);
 
-	
+	printf("packetCapture:%s\n", packetCapture);
 
 	fileHeader(writeFile);
 
@@ -127,11 +124,9 @@ int main (int argc, char *argv[])
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
-				
 				break;
 			case(1):
 				StatusPayload(packetCapture, writeFile);
-				printf("Error");
 				break;
 			case(2):
 				printf("Its a Comm\n");
