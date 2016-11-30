@@ -68,12 +68,15 @@ int main (int argc, char *argv[])
 		printf("%d\n", headerValues[a]);
 	}
 
-	tmpBuff = getPayload(tmpBuff, payload);
-
-	int type = getType(payload);
-
 	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
 	char *packetPointer = packetCapture;
+
+	printf("tmpBuff:%s\n", tmpBuff);
+	int type = getType(packetCapture);
+	getPayload(&packetCapture,type);
+	printf("tmpBuff:%s\n", tmpBuff);
+	printf("packetCapturer:%s\n", packetCapture);
+
 	
 
 	fileHeader(writeFile);
