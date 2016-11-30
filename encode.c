@@ -131,7 +131,7 @@ int main (int argc, char *argv[])
 	}
 
 	int command = a;
-	if(command % 2 == 0 )
+	if(command % 2 == 0 || command == 3 )
 	{
 		cp.command = htons(command);
 		fwrite(&cp, 2, 1, writeFile); 
