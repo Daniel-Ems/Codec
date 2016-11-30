@@ -73,6 +73,15 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t id;
 	};
 
+	struct __attribute__((packed)) EncodeZerg{
+		uint32_t version : 4;
+		uint32_t type : 4 ;
+		uint32_t length : 24;
+		uint32_t source : 16;
+		uint32_t dest : 16;
+		uint32_t id;
+	};
+
 	struct StatusPacket{
 			uint32_t hit_armor;
 			uint32_t max_type;
@@ -86,7 +95,6 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t maxPoints : 24;
 		uint32_t type : 8;
 		uint32_t speed ;
-		char *name;
 	};
 
 	struct MessagePacket{
