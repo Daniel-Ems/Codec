@@ -103,3 +103,29 @@ uint32_t convertInt(float tmpNum)
 	return maxSpeed;
 	}
 
+FILE *fileHeader(FILE *writeFile)
+	{
+		struct FileHeader fh;
+		fh.fileType = 0xa1b2c3d4;
+		fh.majorVersion = 2;
+		fh.minorVersion = 4;
+		fh.gmtOffset = 0;
+		fh.accuracyDelta = 0;
+		fh.maximumLength = 0;
+		fh.linkLayer = 1;
+
+		fwrite(&fh, sizeof(struct FileHeader), 1, writeFile);
+		return writeFile;
+	}
+
+FILE *ethernetHeader(FILE *writeFile)
+	{
+		struct EthernetFrame ef;
+		ef.d_mac = 0x000000000000;
+		ef.s_mac = 0x111111111111;
+		ef.type = 0x0008; 
+
+		fwrite(&ef, sizeof(ef), 1, writeFile);
+		return writeFile;
+	}
+
