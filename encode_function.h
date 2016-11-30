@@ -19,7 +19,7 @@ FILE *fileHeader(FILE *writeFile);
 FILE *ethernetHeader(FILE *writeFile);
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
-char *getPayload(char *tmpBuff, char *payload);
+void getPayload(char **packerCapture,int type);
 char *getPacket(char *tmpBuff, char *payload, off_t fileEnd);
 void notdigit(char **packetCapture);
 uint32_t convertInt(float tmpNum);
