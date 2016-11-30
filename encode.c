@@ -185,7 +185,11 @@ int main (int argc, char *argv[])
 		cp.parameter_one = 0x0000;
 		fwrite(&cp, sizeof(cp), 1, writeFile);
 	}
-
+	else
+	{
+		printf("Packet Corrupt");
+		return EX_USAGE;
+	}
 
 	printf("packetCapture%s\n", packetCapture);
 	printf("command%d\n", command);
