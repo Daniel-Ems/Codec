@@ -42,7 +42,7 @@ void commFunction(union PayloadStructs *zerg)
 			case (1):
 				printf("GOTO\n");
 				float location = converter(&zerg->comm.parameter_two);
-				printf("location %f\n", location);
+				printf("location: %f\n", location);
 				printf("%x m\n", zerg->comm.parameter_one);
 				break;
 			case (2):
@@ -55,9 +55,9 @@ void commFunction(union PayloadStructs *zerg)
 				printf("SET_GROUP\n");
 				if(zerg->comm.parameter_one)
 				{
-					printf("Add zerg to %d\n", zerg->comm.parameter_two);
+					printf("Add zerg to: %d\n", zerg->comm.parameter_two);
 				}else{
-					printf("Remove zerg from %x\n", zerg->comm.parameter_two);
+					printf("Remove zerg from: %d\n", zerg->comm.parameter_two);
 				}
 				break;
 			case (6):
