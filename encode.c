@@ -119,6 +119,50 @@ int main (int argc, char *argv[])
 	ez.id = htonl(headerValues[1]);
 
 	fwrite(&ez,sizeof(ez),1, writeFile);
+
+	const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
+"RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
+
+	struct CommandPacket cp;
+	a = 0;
+	while(strcasestr(packetCapture, commandGroups[a]) == NULL)
+	{
+		a++;
+	}
+
+	int command = a;
+	if(command % 2 == 0 )
+	{
+		cp.command = htons(command);
+		fwrite(&cp, 2, 1, writeFile); 
+	}
+	if(command == 1)
+	{
+		cp.command = htons(command);
+		packetCapture = strcasestr(packetCapture, "Location");
+		notdigit(&packetCapture);
+		float tmpNum = strtof(packetCapture, NULL);
+		cp.parameter_two = convertInt(tmpNum);
+		notdigit(&packetCapture);
+		while(isdigit(*packetCapture))
+		{
+			packetCapture++;
+		}
+		notdigit(&packetCapture);
+		while(isdigit(*packetCapture))
+		{
+			packetCapture++;
+		}
+		printf("%s\n", packetCapture);
+		cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
+		printf("Param 1 %d\n", cp.parameter_one);
+		fwrite(&cp, sizeof(cp), 1, writeFile);
+	}
+
+
+	printf("packetCapture%s\n", packetCapture);
+	printf("command%d\n", command);
+	
 	//this is the end of your stat paylaod function
 	puts("\n");
 		int typeCase = type;
@@ -129,6 +173,7 @@ int main (int argc, char *argv[])
 				StatusPayload(packetCapture, writeFile);
 				break;
 			case(2):
+				
 				printf("Its a Comm\n");
 				break;
 			case(3):
@@ -137,11 +182,10 @@ int main (int argc, char *argv[])
 
 		}
 
-	
 	free(packetPointer);
 	free(payloadPointer);
 	free(buffPointer);
-	fclose(encodeFile);
 	free(buf);
+	fclose(encodeFile);
 	fclose(writeFile);
 }
