@@ -27,7 +27,7 @@ profile: $(bins)
 
 
 clean:
-	$(RM) $(all) 
+	$(RM) $(all) *.o 
 
 
 
