@@ -68,7 +68,6 @@ int main (int argc, char *argv[])
 		printf("%d\n", headerValues[a]);
 	}
 
-	//TODO: this gets you to the beginning value of your payload.
 	tmpBuff = getPayload(tmpBuff, payload);
 
 	int type = getType(payload);
@@ -78,71 +77,72 @@ int main (int argc, char *argv[])
 
 	printf("packetCapture %s\n", packetCapture);
 
+	//This is going to be the beginning of your stat payload function
 	char *name = calloc(1, strlen(packetCapture) + 1);
 	char *newName = name;
 
-		a = 0;
-		while(!isalnum(*packetCapture))
-		{
-			packetCapture++;
-		}
-		while(isalnum(*packetCapture))
-		{
-			name[a] = *packetCapture;
-			packetCapture++;
-			a++;
-		}
+	a = 0;
+	while(!isalnum(*packetCapture))
+	{
+		packetCapture++;
+	}
+	while(isalnum(*packetCapture))
+	{
+		name[a] = *packetCapture;
+		packetCapture++;
+		a++;
+	}
 
 	struct EncodeStatusPacket esp;
 	esp.name = calloc(1, strlen(name)+1);\
 	char *tmpName = esp.name;
 	strncpy(esp.name, name, strlen(name));
-	printf("esp.name: %s:\n", esp.name);
+	printf("name: %s:\n", esp.name);
 
 	memset(name, 0, strlen(name));
 
-
-	printf("cleared name: %s\n", name);
 	a=0;
-		packetCapture = strcasestr(packetCapture, "hp");
+	packetCapture = strcasestr(packetCapture, "hp");
 
-		notdigit(&packetCapture);
-		esp.hitPoints = strtol(packetCapture, NULL, 10);
-		printf("hitPoints: %d\n", esp.hitPoints);
-		while(isalnum(*packetCapture))
-		{
-			packetCapture++;
-		}
-		a=0;
-		notdigit(&packetCapture);
-		esp.maxPoints = strtol(packetCapture, NULL, 10);
-		printf("maxPoints: %d\n", esp.maxPoints);
+	notdigit(&packetCapture);
+	esp.hitPoints = strtol(packetCapture, NULL, 10);
+	printf("hitPoints: %d\n", esp.hitPoints);
+	while(isalnum(*packetCapture))
+	{
+		packetCapture++;
+	}
+	a=0;
+	notdigit(&packetCapture);
+	esp.maxPoints = strtol(packetCapture, NULL, 10);
+	printf("maxPoints: %d\n", esp.maxPoints);
 
-		const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
+	const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
 
-		int z = 0;
-		while(strcasestr(packetCapture, typeField[z])== NULL)
-		{
-			z++;
-		}
+	int z = 0;
+	while(strcasestr(packetCapture, typeField[z])== NULL)
+	{
+		z++;
+	}
 
-		packetCapture = strcasestr(packetCapture, typeField[z]);
-		esp.type = z;
-		printf("type: %d\n", z);
+	packetCapture = strcasestr(packetCapture, typeField[z]);
+	esp.type = z;
+	printf("type: %x\n", z);
 
-		packetCapture = strcasestr(packetCapture, "Armor");
-		notdigit(&packetCapture);
-		esp.armor = strtol(packetCapture, NULL, 10);
-		printf("armor: %d\n", esp.armor);
+	packetCapture = strcasestr(packetCapture, "Armor");
+	notdigit(&packetCapture);
+	esp.armor = strtol(packetCapture, NULL, 10);
+	printf("armor: %x\n", esp.armor);
 
-		float tmpNum;
-		packetCapture = strcasestr(packetCapture, "maxspeed");
-		notdigit(&packetCapture);
-		tmpNum = strtof(packetCapture, NULL);
-		printf("Speed: %f\n", tmpNum);
-		
+	float tmpNum;
+	packetCapture = strcasestr(packetCapture, "maxspeed");
+	notdigit(&packetCapture);
+	tmpNum = strtof(packetCapture, NULL);
+	esp.speed = convertInt(tmpNum);
+
+	printf("converted speed %x", esp.speed);
+
+	//this is the end of your stat paylaod function
 	puts("\n");
-	printf("packet: %s\n", packetCapture);
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
