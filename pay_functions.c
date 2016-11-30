@@ -43,7 +43,7 @@ void commFunction(union PayloadStructs *zerg)
 				printf("GOTO\n");
 				float location = converter(&zerg->comm.parameter_two);
 				printf("location: %f\n", location);
-				printf("%x m\n", zerg->comm.parameter_one);
+				printf("%d m\n", ntohs(zerg->comm.parameter_one));
 				break;
 			case (2):
 				printf("GET_GPS\n");
@@ -64,7 +64,7 @@ void commFunction(union PayloadStructs *zerg)
 				printf("STOP\n");
 				break;
 			case (7):
-				printf("REPEAT %x\n", zerg->comm.parameter_two);
+				printf("REPEAT %d\n", ntohl(zerg->comm.parameter_two));
 				break;
 		}
 	free(zerg);
