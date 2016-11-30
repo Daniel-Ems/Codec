@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "structs.h"
 #include "encode_function.h"
-#include "encode_structs.c"
+#include "payloads.h"
 
 
 int main (int argc, char *argv[])
@@ -75,72 +75,64 @@ int main (int argc, char *argv[])
 	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
 	char *packetPointer = packetCapture;
 
-	printf("packetCapture %s\n", packetCapture);
+	struct FileHeader fh;
+	fh.fileType = 0xa1b2c3d4;
+	fh.majorVersion = 2;
+	fh.minorVersion = 4;
+	fh.gmtOffset = 0;
+	fh.accuracyDelta = 0;
+	fh.maximumLength = 0;
+	fh.linkLayer = 1;
 
-	//This is going to be the beginning of your stat payload function
-	char *name = calloc(1, strlen(packetCapture) + 1);
-	char *newName = name;
+	printf("%zd", sizeof(struct FileHeader));
+	fwrite(&fh, sizeof(struct FileHeader), 1, writeFile);
 
-	a = 0;
-	while(!isalnum(*packetCapture))
-	{
-		packetCapture++;
-	}
-	while(isalnum(*packetCapture))
-	{
-		name[a] = *packetCapture;
-		packetCapture++;
-		a++;
-	}
+	struct PcapHeader ph;
+	ph.unixEpoch = 0x00000000;
+	ph.epochMicroseconds = 0x00000000;
+	ph.captureLength = 0x11111111; //not good
+	ph.packetLength = 0x00000000;
 
-	struct EncodeStatusPacket esp;
-	esp.name = calloc(1, strlen(name)+1);\
-	char *tmpName = esp.name;
-	strncpy(esp.name, name, strlen(name));
-	printf("name: %s:\n", esp.name);
+	fwrite(&ph, sizeof(ph), 1, writeFile);
 
-	memset(name, 0, strlen(name));
+	struct EthernetFrame ef;
+	ef.d_mac = 0x000000000000;
+	ef.s_mac = 0x111111111111;
+	ef.type = 0x0008; 
 
-	a=0;
-	packetCapture = strcasestr(packetCapture, "hp");
+	fwrite(&ef, sizeof(ef), 1, writeFile);
 
-	notdigit(&packetCapture);
-	esp.hitPoints = strtol(packetCapture, NULL, 10);
-	printf("hitPoints: %d\n", esp.hitPoints);
-	while(isalnum(*packetCapture))
-	{
-		packetCapture++;
-	}
-	a=0;
-	notdigit(&packetCapture);
-	esp.maxPoints = strtol(packetCapture, NULL, 10);
-	printf("maxPoints: %d\n", esp.maxPoints);
+	struct Ipv4Header ih;
+	ih.version = 0x45; 
+	ih.total_length = 0x1234; //not good
+	ih.id = 0x00000000;
+	ih.offset = 0x000016;
+	ih.ttl = 0x0011;
+	ih.protocol = 0x11; //not good
+	ih.checksum = 0x1234;
+	ih.s_ip = 0x87654321;
+	ih.d_ip = 0x12345678;
 
-	const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
+	fwrite(&ih, sizeof(ih), 1, writeFile);
 
-	int z = 0;
-	while(strcasestr(packetCapture, typeField[z])== NULL)
-	{
-		z++;
-	}
+	struct UdpHeader uh;
+	uh.s_port = 0x1111;
+	uh.d_port = 0x2222; //not good
+	uh.length = 0x3333; //not good
+	uh.checksum = 0x4444;
 
-	packetCapture = strcasestr(packetCapture, typeField[z]);
-	esp.type = z;
-	printf("type: %x\n", z);
+	fwrite(&uh, sizeof(uh), 1, writeFile);
 
-	packetCapture = strcasestr(packetCapture, "Armor");
-	notdigit(&packetCapture);
-	esp.armor = strtol(packetCapture, NULL, 10);
-	printf("armor: %x\n", esp.armor);
 
-	float tmpNum;
-	packetCapture = strcasestr(packetCapture, "maxspeed");
-	notdigit(&packetCapture);
-	tmpNum = strtof(packetCapture, NULL);
-	esp.speed = convertInt(tmpNum);
+	struct EncodeZerg ez;
+	ez.version = headerValues[0];
+	ez.type = type;
+	ez.length = 0x123456;
+	ez.source = htons(headerValues[2]);
+	ez.dest = htons(headerValues[3]);
+	ez.id = htonl(headerValues[1]);
 
-	printf("converted speed %x", esp.speed);
-
+	fwrite(&ez,sizeof(ez),1, writeFile);
 	//this is the end of your stat paylaod function
 	puts("\n");
 		int typeCase = type;
@@ -149,6 +141,8 @@ int main (int argc, char *argv[])
 				
 				break;
 			case(1):
+				StatusPayload(packetCapture, writeFile);
+				printf("Error");
 				break;
 			case(2):
 				printf("Its a Comm\n");
@@ -156,15 +150,14 @@ int main (int argc, char *argv[])
 			case(3):
 				printf("Its a gps\n");
 				break;
-		}
-	printf("%d\n", type);
 
-	free(tmpName);
-	free(newName);
-	free(buf);
+		}
+
+	
 	free(packetPointer);
 	free(payloadPointer);
 	free(buffPointer);
 	fclose(encodeFile);
+	free(buf);
 	fclose(writeFile);
 }
