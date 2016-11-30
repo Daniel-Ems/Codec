@@ -94,7 +94,8 @@ int main (int argc, char *argv[])
 		}
 
 	struct EncodeStatusPacket esp;
-	esp.name = calloc(1, strlen(name)+1);
+	esp.name = calloc(1, strlen(name)+1);\
+	char *tmpName = esp.name;
 	strncpy(esp.name, name, strlen(name));
 	printf("esp.name: %s:\n", esp.name);
 
@@ -104,22 +105,18 @@ int main (int argc, char *argv[])
 	printf("cleared name: %s\n", name);
 	a=0;
 		packetCapture = strcasestr(packetCapture, "hp");
-			while(!isdigit(*packetCapture))
-			{
-				packetCapture++;
-			}
-			while(isdigit(*packetCapture))
-			{
-				name[a] = *packetCapture;
-				packetCapture++;
-				a++;
-			}
-			esp.hitPoints = strtol(name, NULL, 10);
-			printf("hitPoints: %d\n", esp.hitPoints);
-			a=0;
-			notdigit(&packetCapture);
-			esp.maxPoints = strtol(packetCapture, NULL, 10);
-			printf("maxPoints: %d\n", esp.maxPoints);
+
+		notdigit(&packetCapture);
+		esp.hitPoints = strtol(packetCapture, NULL, 10);
+		printf("hitPoints: %d\n", esp.hitPoints);
+		while(isalnum(*packetCapture))
+		{
+			packetCapture++;
+		}
+		a=0;
+		notdigit(&packetCapture);
+		esp.maxPoints = strtol(packetCapture, NULL, 10);
+		printf("maxPoints: %d\n", esp.maxPoints);
 
 		const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
 
@@ -127,8 +124,8 @@ int main (int argc, char *argv[])
 		while(strcasestr(packetCapture, typeField[z])== NULL)
 		{
 			z++;
-
 		}
+
 		packetCapture = strcasestr(packetCapture, typeField[z]);
 		esp.type = z;
 		printf("type: %d\n", z);
@@ -138,10 +135,11 @@ int main (int argc, char *argv[])
 		esp.armor = strtol(packetCapture, NULL, 10);
 		printf("armor: %d\n", esp.armor);
 
+		float tmpNum;
 		packetCapture = strcasestr(packetCapture, "maxspeed");
 		notdigit(&packetCapture);
-		esp.speed = strtol(packetCapture, NULL, 10);
-		printf("Speed: %d\n", esp.speed);
+		tmpNum = strtof(packetCapture, NULL);
+		printf("Speed: %f\n", tmpNum);
 		
 	puts("\n");
 	printf("packet: %s\n", packetCapture);
@@ -161,6 +159,7 @@ int main (int argc, char *argv[])
 		}
 	printf("%d\n", type);
 
+	free(tmpName);
 	free(newName);
 	free(buf);
 	free(packetPointer);
