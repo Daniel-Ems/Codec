@@ -10,7 +10,7 @@ all=decode encode
 bins: $(all)
 
 decode: decode.o structs.o pay_functions.o 
-encode: encode.o encode_function.o 
+encode: encode.o encode_function.o payloads.o
 
 
 .PHONY: clean debug profile
