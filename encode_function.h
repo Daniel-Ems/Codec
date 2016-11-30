@@ -13,7 +13,10 @@
 #include <arpa/inet.h>
 #include <sysexits.h>
 #include <sys/stat.h>
+#include "structs.h"
 
+FILE *fileHeader(FILE *writeFile);
+FILE *ethernetHeader(FILE *writeFile);
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 char *getPayload(char *tmpBuff, char *payload);
