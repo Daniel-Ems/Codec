@@ -12,6 +12,8 @@
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 char *getPayload(char *tmpBuff, char *payload);
-char *getPacket(char *tmpBuff, char *payload, size_t fileEnd);
+char *getPacket(char *tmpBuff, char *payload, off_t fileEnd);
+void notdigit(char **packetCapture);
+//char payVals(char **packetCapture, const char *search, off_t fileEnd);
 
 #endif
