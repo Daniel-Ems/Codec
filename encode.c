@@ -73,12 +73,12 @@ int main (int argc, char *argv[])
 
 	int type = getType(payload);
 
-	char * packetCapture = getPacket(tmpBuff, payload, fileEnd);
+	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
 	char *packetPointer = packetCapture;
 
 	printf("packetCapture %s\n", packetCapture);
 
-	char *name = calloc(1, fileEnd + 1);
+	char *name = calloc(1, strlen(packetCapture) + 1);
 	char *newName = name;
 
 		a = 0;
@@ -93,11 +93,16 @@ int main (int argc, char *argv[])
 			a++;
 		}
 
-	printf("name :%s\n", name);
-	const char *statFields[4] = {"HP", "TYPE", "ARMOR", "MAXSPEED"};
-	int b;
+	struct EncodeStatusPacket esp;
+	esp.name = calloc(1, strlen(name)+1);
+	strncpy(esp.name, name, strlen(name));
+	printf("esp.name:%s:\n", esp.name);
 
+	memset(name, 0, strlen(name));
 
+	int tmpNum;
+	printf("cleared name: %s\n", name);
+	a=0;
 		packetCapture = strcasestr(packetCapture, "hp");
 			while(!isdigit(*packetCapture))
 			{
@@ -109,22 +114,34 @@ int main (int argc, char *argv[])
 				packetCapture++;
 				a++;
 			}
+			tmpNum = strtol(name, NULL, 10);
+			esp.hitPoints = tmpNum;
+			printf("hitPoints%d\n", esp.hitPoints);
+			a=0;
 			while(!isdigit(*packetCapture))
 			{
-				name[a] = *packetCapture;
 				packetCapture++;
-				a++;
 			}
-			while(isdigit(*packetCapture))
-			{
-				name[a] = *packetCapture;
-				packetCapture++;
-				a++;
-			}
-		printf("%s\n", name);
+			tmpNum = strtol(packetCapture, NULL, 10);
+			esp.maxPoints = tmpNum;
+			printf("maxPoints%d\n", esp.maxPoints);
+		printf("packetCapture: %s\n", packetCapture);
 
-		packetCapture = strcasestr(packetCapture, "hp");
-		
+		const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
+
+		int z = 0;
+		while( strcasestr(packetCapture, typeField[z])== NULL)
+		{
+			z++;
+
+		}
+		packetCapture = strcasestr(packetCapture, typeField[z]);
+		for(size_t b = 0; b < strlen(typeField[z]); b++)
+		{
+			name[b] = *packetCapture;
+			packetCapture++;
+		}
+		printf("name :%s\n", name);
 
 
 	puts("\n");
