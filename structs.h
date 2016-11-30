@@ -59,6 +59,17 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t d_ip;
 	};
 
+	struct __attribute__((packed)) encodeIpv4{
+		uint32_t version : 16;
+		uint32_t total_length : 16;
+		uint32_t id : 16;
+		uint32_t offset : 16;
+		uint32_t protocol : 16;
+		uint32_t checksum : 16;
+		uint32_t s_ip;
+		uint32_t d_ip;
+	};
+
 	struct UdpHeader{
 		uint32_t s_port : 16;
 		uint32_t d_port : 16;
