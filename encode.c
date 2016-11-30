@@ -123,6 +123,8 @@ int main (int argc, char *argv[])
 	const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
 "RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
 
+	const char *addRemove[2] = {"Remove", "Add" };
+
 	struct CommandPacket cp;
 	a = 0;
 	while(strcasestr(packetCapture, commandGroups[a]) == NULL)
@@ -153,11 +155,29 @@ int main (int argc, char *argv[])
 		{
 			packetCapture++;
 		}
-		printf("%s\n", packetCapture);
 		cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
-		printf("Param 1 %d\n", cp.parameter_one);
 		fwrite(&cp, sizeof(cp), 1, writeFile);
 	}
+	else if(command == 5)
+	{
+		a = 0;
+		printf("packetCapture %s\n", packetCapture);
+		cp.command = htons(command);
+		while(strcasestr(packetCapture, addRemove[a]) == NULL)
+		{
+			a++;
+		}
+		cp.parameter_one = htons(a);
+		packetCapture = strcasestr(packetCapture, "to");
+		while(isalpha(*packetCapture))
+		{
+			packetCapture++;
+		}
+		packetCapture++;
+		cp.parameter_two = strtol(packetCapture,NULL,10);
+		fwrite(&cp, sizeof(cp), 1, writeFile);
+	}
+	
 
 
 	printf("packetCapture%s\n", packetCapture);
