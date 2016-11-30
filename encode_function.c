@@ -99,7 +99,7 @@ uint32_t convertInt(float tmpNum)
 
 	union converter speed_test; 
 	speed_test.speed =tmpNum;
-	uint32_t maxSpeed = speed_test.test;
+	uint32_t maxSpeed = htonl(speed_test.test);
 	return maxSpeed;
 	}
 
