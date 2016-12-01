@@ -94,11 +94,11 @@ enum{etherIpUdp = 14+20+8};
 	};
 
 	struct StatusPacket{
-			uint32_t hit_armor;
-			uint32_t max_type;
-			uint32_t speed;
-			char name[1];
-		};
+		uint32_t hit_armor;
+		uint32_t max_type;
+		uint32_t speed;
+		char name[1];
+	};
 
 	struct __attribute__((packed)) EncodeStatusPacket{
 		uint32_t hitPoints : 24;
@@ -123,6 +123,14 @@ enum{etherIpUdp = 14+20+8};
 		uint32_t long_second;
 		uint32_t lat_first;
 		uint32_t lat_second;
+		uint32_t altitude;
+		uint32_t bearing;
+		uint32_t speed;
+		uint32_t accuracy;
+	};
+	struct EncodeGps{
+		uint64_t longitude;
+		uint64_t latitude;
 		uint32_t altitude;
 		uint32_t bearing;
 		uint32_t speed;
