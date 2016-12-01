@@ -3,4 +3,5 @@
 
 void StatusPayload(char *packetCapture, FILE* writeFile);
 void CommandPayload(char *packetCapture, FILE *writeFile);
+void GpsPayload(char *packetCapture, FILE *writeFile);
 #endif
