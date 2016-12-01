@@ -97,24 +97,26 @@ int main(int argc, char *argv[])
 	}
 
 	int total = zh.version >> 24;
+	if(total == 0)
+	{
+		printf("Packet Corrupt: Bad Zerg Size\n");
+		return EX_USAGE;
+	}
 
 	//Error Checking. 
 	size_t lengthCheck = etherIpUdp + total;
-	if(ph.packetLength < lengthCheck)
+	if(ph.captureLength < lengthCheck)
 	{
 		printf("Your file is corrupt: packet length is too short");
 		return EX_USAGE;
 	}
 
 	padding = (ph.captureLength - etherIpUdp - total);
-	printf("%d\n", padding);
-	printf("%d\n", ph.captureLength);
 	union PayloadStructs *zerged;
 
 	int type = zh.version & 0x0f;
 
 	ip.version = ip.version >> 4;
-	printf("%x\n", ip.version);
 
 	print_zerg_header(zh);
 
