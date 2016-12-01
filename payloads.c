@@ -1,0 +1,164 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <sysexits.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "structs.h"
+#include "encode_function.h"
+#include "payloads.h"
+
+void StatusPayload(char *packetCapture, FILE *writeFile)
+	{
+	char *name = calloc(1, 6 );
+	char *newName = name;
+
+	int a = 0;
+	while(!isalnum(*packetCapture))
+	{
+		packetCapture++;
+	}
+	while(isalnum(*packetCapture))
+	{
+		name[a] = *packetCapture;
+		packetCapture++;
+		a++;
+	}
+	printf("Name:%s\n", name);
+	struct EncodeStatusPacket esp;
+
+	//esp.name = calloc(1, strlen(name)+1);
+	//char *tmpName = esp.name;
+	//strncpy(esp.name, name,strlen(name));
+	//printf("name: %s\n", esp.name);
+
+	
+
+	a=0;
+	packetCapture = strcasestr(packetCapture, "hp");
+
+	notdigit(&packetCapture);
+	int number = htonl(strtol(packetCapture, NULL, 10));
+	esp.hitPoints = number >> 8;
+	printf("hitPoints: %d\n", esp.hitPoints);
+	while(isalnum(*packetCapture))
+	{
+		packetCapture++;
+	}
+	a=0;
+	notdigit(&packetCapture);
+	number = htonl(strtol(packetCapture, NULL, 10));
+	esp.maxPoints = number >> 8;
+	printf("maxPoints: %d\n", esp.maxPoints);
+
+	const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
+
+	int z = 0;
+	while(strcasestr(packetCapture, typeField[z])== NULL)
+	{
+		z++;
+	}
+
+	packetCapture = strcasestr(packetCapture, typeField[z]);
+	esp.type = z;
+	printf("type: %x\n", z);
+
+	packetCapture = strcasestr(packetCapture, "Armor");
+	notdigit(&packetCapture);
+	esp.armor = htons(strtol(packetCapture, NULL, 10));
+	printf("armor: %x\n", esp.armor);
+
+	float tmpNum;
+	packetCapture = strcasestr(packetCapture, "maxspeed");
+	notdigit(&packetCapture);
+	tmpNum = strtof(packetCapture, NULL);
+	esp.speed = convertInt(tmpNum);
+
+	printf("converted speed %x\n", esp.speed);
+
+	//printf("esp.name: %s\n", esp.name);
+	fwrite(&esp,sizeof(esp),1, writeFile);
+	fwrite(name, strlen(name),1,writeFile);
+
+	//free(tmpName);
+	free(newName);
+
+	}
+
+void CommandPayload(char *packetCapture, FILE *writeFile)
+	{
+		int a = 0;
+		const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
+		"RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
+
+		const char *addRemove[2] = {"Remove", "Add" };
+
+		struct CommandPacket cp;
+		a = 0;
+		while(strcasestr(packetCapture, commandGroups[a]) == NULL)
+		{
+			a++;
+		}
+
+		int command = a;
+		if(command % 2 == 0 || command == 3 )
+		{
+			cp.command = htons(command);
+			fwrite(&cp, 2, 1, writeFile); 
+		}
+		if(command == 1)
+		{
+			cp.command = htons(command);
+			packetCapture = strcasestr(packetCapture, "Location");
+			notdigit(&packetCapture);
+			float tmpNum = strtof(packetCapture, NULL);
+			cp.parameter_two = convertInt(tmpNum);
+			notdigit(&packetCapture);
+			while(isdigit(*packetCapture))
+			{
+				packetCapture++;
+			}
+			notdigit(&packetCapture);
+			while(isdigit(*packetCapture))
+			{
+				packetCapture++;
+			}
+			cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
+			fwrite(&cp, sizeof(cp), 1, writeFile);
+		}
+		else if(command == 5)
+		{
+			a = 0;
+			printf("packetCapture %s\n", packetCapture);
+			cp.command = htons(command);
+			while(strcasestr(packetCapture, addRemove[a]) == NULL)
+			{
+				a++;
+			}
+			cp.parameter_one = htons(a);
+			packetCapture = strcasestr(packetCapture, "to");
+			while(isalpha(*packetCapture))
+			{
+				packetCapture++;
+			}
+			packetCapture++;
+			cp.parameter_two = strtol(packetCapture,NULL,10);
+			fwrite(&cp, sizeof(cp), 1, writeFile);
+		}
+		else if(command == 7)
+		{
+			cp.command = htons(command);
+			notdigit(&packetCapture);
+			cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
+			cp.parameter_one = 0x0000;
+			fwrite(&cp, sizeof(cp), 1, writeFile);
+		}
+		else
+		{
+			printf("Packet Corrupt");
+		}
+	}
+
