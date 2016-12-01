@@ -47,17 +47,23 @@ int main (int argc, char *argv[])
 		}
 	}
 
+
 	char *tmpBuff = calloc(1, fileEnd+1);
 	char *buffPointer = tmpBuff;
 
 
-	char *payload = calloc(1, fileEnd+1);
-	char *payloadPointer = payload;
 
 	for(int count = 0; count < fileEnd ; count++)
 	{
 		tmpBuff[count] = fgetc(encodeFile);
 	}
+	fileHeader(writeFile);
+
+while(tmpBuff)
+{
+
+	char *payload = calloc(1, fileEnd+1);
+	char *payloadPointer = payload;
 
 	int headerValues[4];
 	const char *headerFields[4] = {"Version", "Sequence","From", "To" };
@@ -65,7 +71,6 @@ int main (int argc, char *argv[])
 	for( a = 0; a < 4; a++)
 	{
 		headerValues[a] = getVal(&tmpBuff, headerFields[a]);
-		printf("%d\n", headerValues[a]);
 	}
 
 	char *packetCapture = getPacket(tmpBuff, payload, fileEnd);
@@ -77,75 +82,40 @@ int main (int argc, char *argv[])
 	printf("TMpBuff %s\n", tmpBuff);
 	printf("packetCapture:%s\n", packetCapture);
 
-	fileHeader(writeFile);
-
-	struct PcapHeader ph;
-	ph.unixEpoch = 0x00000000;
-	ph.epochMicroseconds = 0x00000000;
-	ph.captureLength = 0x11111111; //not good
-	ph.packetLength = 0x00000000;
-
-	fwrite(&ph, sizeof(ph), 1, writeFile);
-
-	ethernetHeader(writeFile);
-
-	struct encodeIpv4 ei;
-	ei.version = 0x45; 
-	ei.total_length = 0x1234; //not good
-	ei.id = 0x00000000;
-	ei.offset = 0x000016;
-	ei.protocol = 0x1100;
-	ei.checksum = 0x1234;
-	ei.s_ip = 0x87654321;
-	ei.d_ip = 0x12345678;
-
-	fwrite(&ei, sizeof(ei), 1, writeFile);
-
-	struct UdpHeader uh;
-	uh.s_port = 0x1111;
-	uh.d_port = 0xa70e;
-	uh.length = 0x3333; //not good
-	uh.checksum = 0x4444;
-
-	fwrite(&uh, sizeof(uh), 1, writeFile);
+	a = 0;
 
 
-	struct EncodeZerg ez;
-	ez.version = headerValues[0];
-	ez.type = type;
-	ez.length = 0x123456;
-	ez.source = htons(headerValues[2]);
-	ez.dest = htons(headerValues[3]);
-	ez.id = htonl(headerValues[1]);
-
-	fwrite(&ez,sizeof(ez),1, writeFile);
-
-	while(!isalnum(*packetCapture))
-	{
-		packetCapture++;
-	}
-	fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
+	struct EncodeZerg *ez = malloc(sizeof (*ez));
+	ez -> version = (headerValues[0]);
+	ez -> type  = (type);
+	ez -> source = htons(headerValues[2]);
+	ez -> dest = htons(headerValues[3]);
+	ez -> id = htonl(headerValues[1]);
 
 	printf("packetCapture%s\n", packetCapture);
 	puts("\n");
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
+				MessagePayload(packetCapture, writeFile, ez);
 				break;
 			case(1):
-				StatusPayload(packetCapture, writeFile);
+				StatusPayload(packetCapture, writeFile,ez);
 				break;
 			case(2):
-				CommandPayload(packetCapture, writeFile);
+				CommandPayload(packetCapture, writeFile,ez);
 				break;
 			case(3):
-				GpsPayload(packetCapture, writeFile);
+				GpsPayload(packetCapture, writeFile, ez);
 				break;
 
 		}
-
 	free(packetPointer);
 	free(payloadPointer);
+	free(ez);
+	tmpBuff = strcasestr(tmpBuff, "Version");
+}
+
 	free(buffPointer);
 	free(buf);
 	fclose(encodeFile);
