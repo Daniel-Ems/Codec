@@ -60,7 +60,8 @@ enum{etherIpUdp = 14+20+8};
 	};
 
 	struct __attribute__((packed)) encodeIpv4{
-		uint32_t version : 16;
+		uint32_t version : 8;
+		uint32_t dscpEcn : 8;
 		uint32_t total_length : 16;
 		uint32_t id : 16;
 		uint32_t offset : 16;
@@ -85,8 +86,8 @@ enum{etherIpUdp = 14+20+8};
 	};
 
 	struct __attribute__((packed)) EncodeZerg{
-		uint32_t version : 4;
 		uint32_t type : 4 ;
+		uint32_t version : 4;
 		uint32_t length : 24;
 		uint32_t source : 16;
 		uint32_t dest : 16;
@@ -111,6 +112,7 @@ enum{etherIpUdp = 14+20+8};
 	struct MessagePacket{
 			char message[1];
 	};
+
 
 	struct CommandPacket{
 		uint32_t command : 16;
