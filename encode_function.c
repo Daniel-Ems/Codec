@@ -143,7 +143,7 @@ void writeHeaders(FILE *writeFile, int size)
 		struct PcapHeader ph;
 		ph.unixEpoch = 0x00000000;
 		ph.epochMicroseconds = 0x00000000;
-		ph.captureLength = htonl(54 + size); 
+		ph.captureLength = (54 + size); 
 		ph.packetLength = 0x00000000;
 
 		fwrite(&ph, sizeof(ph), 1, writeFile);
@@ -158,8 +158,7 @@ void writeHeaders(FILE *writeFile, int size)
 		struct encodeIpv4 ei;
 		ei.version = 0x45; 
 		ei.dscpEcn = 0x00;
-		ei.total_length = (40 + size);
-		printf("iplength: %d\n", ei.total_length);
+		ei.total_length = htons(40 + size);
 		ei.id = 0x00000000;
 		ei.offset = 0x0016;
 		ei.protocol = 0x1100;
@@ -172,8 +171,7 @@ void writeHeaders(FILE *writeFile, int size)
 		struct UdpHeader uh;
 		uh.s_port = 0x1111;
 		uh.d_port = 0xa70e;
-		uh.length = (20 + size);
-		printf("UDPlength%d\n", uh.length);
+		uh.length = htons(20 + size);
 		uh.checksum = 0x4444;
 
 		fwrite(&uh, sizeof(uh), 1, writeFile);
