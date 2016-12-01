@@ -120,6 +120,12 @@ int main (int argc, char *argv[])
 
 	fwrite(&ez,sizeof(ez),1, writeFile);
 
+	while(!isalnum(*packetCapture))
+	{
+		packetCapture++;
+	}
+	fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
+
 	printf("packetCapture%s\n", packetCapture);
 	puts("\n");
 		int typeCase = type;
