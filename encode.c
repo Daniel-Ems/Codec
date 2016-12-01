@@ -120,79 +120,8 @@ int main (int argc, char *argv[])
 
 	fwrite(&ez,sizeof(ez),1, writeFile);
 
-	const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
-"RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
-
-	const char *addRemove[2] = {"Remove", "Add" };
-
-	struct CommandPacket cp;
-	a = 0;
-	while(strcasestr(packetCapture, commandGroups[a]) == NULL)
-	{
-		a++;
-	}
-
-	int command = a;
-	if(command % 2 == 0 || command == 3 )
-	{
-		cp.command = htons(command);
-		fwrite(&cp, 2, 1, writeFile); 
-	}
-	if(command == 1)
-	{
-		cp.command = htons(command);
-		packetCapture = strcasestr(packetCapture, "Location");
-		notdigit(&packetCapture);
-		float tmpNum = strtof(packetCapture, NULL);
-		cp.parameter_two = convertInt(tmpNum);
-		notdigit(&packetCapture);
-		while(isdigit(*packetCapture))
-		{
-			packetCapture++;
-		}
-		notdigit(&packetCapture);
-		while(isdigit(*packetCapture))
-		{
-			packetCapture++;
-		}
-		cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
-		fwrite(&cp, sizeof(cp), 1, writeFile);
-	}
-	else if(command == 5)
-	{
-		a = 0;
-		printf("packetCapture %s\n", packetCapture);
-		cp.command = htons(command);
-		while(strcasestr(packetCapture, addRemove[a]) == NULL)
-		{
-			a++;
-		}
-		cp.parameter_one = htons(a);
-		packetCapture = strcasestr(packetCapture, "to");
-		while(isalpha(*packetCapture))
-		{
-			packetCapture++;
-		}
-		packetCapture++;
-		cp.parameter_two = strtol(packetCapture,NULL,10);
-		fwrite(&cp, sizeof(cp), 1, writeFile);
-	}
-	else if(command == 7)
-	{
-		cp.command = htons(command);
-		notdigit(&packetCapture);
-		cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
-		cp.parameter_one = 0x0000;
-		fwrite(&cp, sizeof(cp), 1, writeFile);
-	}
-	else
-	{
-		printf("Packet Corrupt");
-		return EX_USAGE;
-	}
-
 	printf("packetCapture%s\n", packetCapture);
-	printf("command%d\n", command);
+	//printf("command%d\n", command);
 	
 	//this is the end of your stat paylaod function
 	puts("\n");
@@ -204,7 +133,7 @@ int main (int argc, char *argv[])
 				StatusPayload(packetCapture, writeFile);
 				break;
 			case(2):
-				
+				CommandPayload(packetCapture, writeFile);
 				printf("Its a Comm\n");
 				break;
 			case(3):
