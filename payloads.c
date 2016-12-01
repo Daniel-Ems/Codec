@@ -27,20 +27,14 @@ void StatusPayload(char *packetCapture, FILE *writeFile)
 		packetCapture++;
 		a++;
 	}
+
 	printf("Name:%s\n", name);
 	struct EncodeStatusPacket esp;
-
-	//esp.name = calloc(1, strlen(name)+1);
-	//char *tmpName = esp.name;
-	//strncpy(esp.name, name,strlen(name));
-	//printf("name: %s\n", esp.name);
-
-	
 
 	a=0;
 	packetCapture = strcasestr(packetCapture, "hp");
 
-	notdigit(&packetCapture);
+	notDigit(&packetCapture);
 	int number = htonl(strtol(packetCapture, NULL, 10));
 	esp.hitPoints = number >> 8;
 	printf("hitPoints: %d\n", esp.hitPoints);
@@ -49,7 +43,7 @@ void StatusPayload(char *packetCapture, FILE *writeFile)
 		packetCapture++;
 	}
 	a=0;
-	notdigit(&packetCapture);
+	notDigit(&packetCapture);
 	number = htonl(strtol(packetCapture, NULL, 10));
 	esp.maxPoints = number >> 8;
 	printf("maxPoints: %d\n", esp.maxPoints);
@@ -67,25 +61,22 @@ void StatusPayload(char *packetCapture, FILE *writeFile)
 	printf("type: %x\n", z);
 
 	packetCapture = strcasestr(packetCapture, "Armor");
-	notdigit(&packetCapture);
+	notDigit(&packetCapture);
 	esp.armor = htons(strtol(packetCapture, NULL, 10));
 	printf("armor: %x\n", esp.armor);
 
 	float tmpNum;
 	packetCapture = strcasestr(packetCapture, "maxspeed");
-	notdigit(&packetCapture);
+	notDigit(&packetCapture);
 	tmpNum = strtof(packetCapture, NULL);
 	esp.speed = convertInt(tmpNum);
 
 	printf("converted speed %x\n", esp.speed);
 
-	//printf("esp.name: %s\n", esp.name);
 	fwrite(&esp,sizeof(esp),1, writeFile);
 	fwrite(name, strlen(name),1,writeFile);
 
-	//free(tmpName);
 	free(newName);
-
 	}
 
 void CommandPayload(char *packetCapture, FILE *writeFile)
@@ -113,15 +104,15 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 		{
 			cp.command = htons(command);
 			packetCapture = strcasestr(packetCapture, "Location");
-			notdigit(&packetCapture);
+			notDigit(&packetCapture);
 			float tmpNum = strtof(packetCapture, NULL);
 			cp.parameter_two = convertInt(tmpNum);
-			notdigit(&packetCapture);
+			notDigit(&packetCapture);
 			while(isdigit(*packetCapture))
 			{
 				packetCapture++;
 			}
-			notdigit(&packetCapture);
+			notDigit(&packetCapture);
 			while(isdigit(*packetCapture))
 			{
 				packetCapture++;
@@ -151,7 +142,7 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 		else if(command == 7)
 		{
 			cp.command = htons(command);
-			notdigit(&packetCapture);
+			notDigit(&packetCapture);
 			cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
 			cp.parameter_one = 0x0000;
 			fwrite(&cp, sizeof(cp), 1, writeFile);
@@ -161,4 +152,50 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 			printf("Packet Corrupt");
 		}
 	}
+
+void GpsPayload(char *packetCapture, FILE *writeFile)
+	{
+		struct EncodeGps eg;
+	//const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed", 	//"Accuracy"};
+
+		double latitude = strtod(packetCapture, NULL);
+		if(strstr(packetCapture, "deg. S"))
+		{
+			latitude = -latitude;
+		}
+		eg.latitude = convertDoub(latitude);
+
+		packetCapture = strcasestr(packetCapture, "Longitude");
+		notDigit(&packetCapture);
+
+		double longitude = strtod(packetCapture, NULL);
+		if(strstr(packetCapture, "deg. W"))
+		{
+			longitude = -longitude;
+		}
+		eg.longitude = convertDoub(longitude);
+
+		packetCapture = strcasestr(packetCapture, "Altitude");
+		notDigit(&packetCapture);
+		float altitude = strtof(packetCapture, NULL);
+		eg.altitude = convertInt((altitude/1.8288));
+
+		packetCapture = strcasestr(packetCapture, "Bearing");
+		notDigit(&packetCapture);
+		float bearing = strtof(packetCapture, NULL);
+		eg.bearing = convertInt(bearing);
+
+		packetCapture = strcasestr(packetCapture, "Speed");
+		notDigit(&packetCapture);
+		float speed = strtof(packetCapture, NULL);
+		eg.speed = convertInt((speed / 3.6));
+
+		packetCapture = strcasestr(packetCapture, "Accuracy");
+		notDigit(&packetCapture);
+		float accuracy = strtof(packetCapture,NULL);
+		eg.accuracy = convertInt(accuracy);
+
+		fwrite(&eg, sizeof(eg), 1, writeFile);
+	}
+
 
