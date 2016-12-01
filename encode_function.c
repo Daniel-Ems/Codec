@@ -88,7 +88,7 @@ char *getPacket(char *tmpBuff, char *payload, off_t fileEnd)
 		return tmpCapture;
 	}
 
-void notdigit(char **packetCapture)
+void notDigit(char **packetCapture)
 	{
 	while(!isdigit(**packetCapture))
 		{
@@ -108,6 +108,18 @@ uint32_t convertInt(float tmpNum)
 	uint32_t maxSpeed = htonl(speed_test.test);
 	return maxSpeed;
 	}
+
+uint64_t convertDoub(double number)
+{
+	union ConvertDoub{
+		double placeHolder;
+		uint64_t oldNumber;
+	};
+
+	union ConvertDoub conversion;
+	conversion.placeHolder = number;
+	return htobe64(conversion.oldNumber);
+}
 
 void fileHeader(FILE *writeFile)
 	{
