@@ -26,8 +26,6 @@ int main (int argc, char *argv[])
 		return EX_USAGE;
 	}
 
-	printf("fileEnd %zd\n", fileEnd); 
-
 	if(argc < 3)
 	{
 		printf("Please provide a file to be encoded, and to be written too\n");
@@ -47,11 +45,8 @@ int main (int argc, char *argv[])
 		}
 	}
 
-
 	char *tmpBuff = calloc(1, fileEnd+1);
 	char *buffPointer = tmpBuff;
-
-
 
 	for(int count = 0; count < fileEnd ; count++)
 	{
@@ -79,11 +74,7 @@ while(tmpBuff)
 	int type = getType(packetCapture);
 	getPayload(&packetCapture,type);
 
-	printf("TMpBuff %s\n", tmpBuff);
-	printf("packetCapture:%s\n", packetCapture);
-
 	a = 0;
-
 
 	struct EncodeZerg *ez = malloc(sizeof (*ez));
 	ez -> version = (headerValues[0]);
@@ -92,8 +83,6 @@ while(tmpBuff)
 	ez -> dest = htons(headerValues[3]);
 	ez -> id = htonl(headerValues[1]);
 
-	printf("packetCapture%s\n", packetCapture);
-	puts("\n");
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
