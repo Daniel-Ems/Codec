@@ -66,6 +66,9 @@ void commFunction(union PayloadStructs *zerg)
 			case (7):
 				printf("REPEAT %d\n", ntohl(zerg->comm.parameter_two));
 				break;
+			default:
+				printf("Packet Corrupt");
+				break;
 		}
 	free(zerg);
 }
