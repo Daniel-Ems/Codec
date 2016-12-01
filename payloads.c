@@ -28,7 +28,6 @@ void StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 		a++;
 	}
 
-	printf("Name:%s\n", name);
 	struct EncodeStatusPacket esp;
 
 	a=0;
@@ -37,7 +36,7 @@ void StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	notDigit(&packetCapture);
 	int number = htonl(strtol(packetCapture, NULL, 10));
 	esp.hitPoints = number >> 8;
-	printf("hitPoints: %d\n", esp.hitPoints);
+
 	while(isalnum(*packetCapture))
 	{
 		packetCapture++;
@@ -46,7 +45,6 @@ void StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	notDigit(&packetCapture);
 	number = htonl(strtol(packetCapture, NULL, 10));
 	esp.maxPoints = number >> 8;
-	printf("maxPoints: %d\n", esp.maxPoints);
 
 	const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
 
@@ -58,20 +56,16 @@ void StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 
 	packetCapture = strcasestr(packetCapture, typeField[z]);
 	esp.type = z;
-	printf("type: %x\n", z);
 
 	packetCapture = strcasestr(packetCapture, "Armor");
 	notDigit(&packetCapture);
-	esp.armor = htons(strtol(packetCapture, NULL, 10));
-	printf("armor: %x\n", esp.armor);
+	esp.armor = strtol(packetCapture, NULL, 10);
 
 	float tmpNum;
 	packetCapture = strcasestr(packetCapture, "maxspeed");
 	notDigit(&packetCapture);
 	tmpNum = strtof(packetCapture, NULL);
 	esp.speed = convertInt(tmpNum);
-
-	printf("converted speed %x\n", esp.speed);
 
 	int size = (sizeof(esp) + strlen(name));
 
@@ -113,22 +107,14 @@ void CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 		else if(command == 1)
 		{
 			cp.command = htons(command);
-			packetCapture = strcasestr(packetCapture, "Location");
+			packetCapture = strcasestr(packetCapture, "Bearing");
 			notDigit(&packetCapture);
 			float tmpNum = strtof(packetCapture, NULL);
 			cp.parameter_two = convertInt(tmpNum);
 			notDigit(&packetCapture);
-			while(isdigit(*packetCapture))
-			{
-				packetCapture++;
-			}
+			packetCapture = strcasestr(packetCapture, "Distance");
 			notDigit(&packetCapture);
-			while(isdigit(*packetCapture))
-			{
-				packetCapture++;
-			}
 			cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
-
 			writeHeaders(writeFile, size);
 			ez -> length = ntohl((12 + size)) >> 8;
 			fwrite(ez, sizeof(*ez), 1, writeFile);
@@ -137,7 +123,6 @@ void CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 		else if(command == 5)
 		{
 			a = 0;
-			printf("packetCapture %s\n", packetCapture);
 			cp.command = htons(command);
 			while(strcasestr(packetCapture, addRemove[a]) == NULL)
 			{
@@ -218,12 +203,10 @@ void GpsPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 		eg.accuracy = convertInt(accuracy);
 
 		int size = sizeof(eg);
-		printf("sizeof%d",size);
 
 		writeHeaders(writeFile, size);
 		ez -> length = htonl((12 + size))>> 8;
-
-		printf("length %x\n", ez->length); 
+ 
 		fwrite(ez, sizeof(*ez), 1, writeFile);
 		fwrite(&eg, sizeof(eg), 1, writeFile);
 	}
@@ -238,7 +221,6 @@ void MessagePayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 		int size = strlen(packetCapture) -1;
 		writeHeaders(writeFile, size);
 		ez -> length = htonl((12 + size)) >> 8;
-		printf("Length %x\n", ez->length);
 		fwrite(ez, sizeof(*ez), 1, writeFile);
 		fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
 	}
