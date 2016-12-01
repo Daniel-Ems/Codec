@@ -11,7 +11,7 @@
 #include "encode_function.h"
 #include "payloads.h"
 
-void StatusPayload(char *packetCapture, FILE *writeFile)
+void StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 	char *name = calloc(1, 6 );
 	char *newName = name;
@@ -73,13 +73,18 @@ void StatusPayload(char *packetCapture, FILE *writeFile)
 
 	printf("converted speed %x\n", esp.speed);
 
+	int size = (sizeof(esp) + strlen(name));
+
+	writeHeaders(writeFile, size); 
+	ez -> length = ntohl((12 + size)) >> 8;
+	fwrite(ez, sizeof(*ez), 1, writeFile);
 	fwrite(&esp,sizeof(esp),1, writeFile);
 	fwrite(name, strlen(name),1,writeFile);
 
 	free(newName);
 	}
 
-void CommandPayload(char *packetCapture, FILE *writeFile)
+void CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 		int a = 0;
 		const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
@@ -89,6 +94,7 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 
 		struct CommandPacket cp;
 		a = 0;
+		int size = 8;
 		while(strcasestr(packetCapture, commandGroups[a]) == NULL)
 		{
 			a++;
@@ -98,9 +104,13 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 		if(command % 2 == 0 || command == 3 )
 		{
 			cp.command = htons(command);
+			int size = 2;
+			writeHeaders(writeFile, size);
+			ez -> length = ntohl((12 + size)) >> 8;
+			fwrite(ez, sizeof(*ez), 1, writeFile);
 			fwrite(&cp, 2, 1, writeFile); 
 		}
-		if(command == 1)
+		else if(command == 1)
 		{
 			cp.command = htons(command);
 			packetCapture = strcasestr(packetCapture, "Location");
@@ -118,6 +128,10 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 				packetCapture++;
 			}
 			cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
+
+			writeHeaders(writeFile, size);
+			ez -> length = ntohl((12 + size)) >> 8;
+			fwrite(ez, sizeof(*ez), 1, writeFile);
 			fwrite(&cp, sizeof(cp), 1, writeFile);
 		}
 		else if(command == 5)
@@ -137,6 +151,10 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 			}
 			packetCapture++;
 			cp.parameter_two = strtol(packetCapture,NULL,10);
+
+			writeHeaders(writeFile, size);
+			ez -> length = ntohl((12  + size)) >> 8;
+			fwrite(ez, sizeof(*ez), 1, writeFile);
 			fwrite(&cp, sizeof(cp), 1, writeFile);
 		}
 		else if(command == 7)
@@ -145,6 +163,10 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 			notDigit(&packetCapture);
 			cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
 			cp.parameter_one = 0x0000;
+
+			writeHeaders(writeFile, size);
+			ez -> length = ntohl((12 + size)) >> 8;
+			fwrite(ez, sizeof(*ez), 1, writeFile);
 			fwrite(&cp, sizeof(cp), 1, writeFile);
 		}
 		else
@@ -153,7 +175,7 @@ void CommandPayload(char *packetCapture, FILE *writeFile)
 		}
 	}
 
-void GpsPayload(char *packetCapture, FILE *writeFile)
+void GpsPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 		struct EncodeGps eg;
 	//const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed", 	//"Accuracy"};
@@ -195,7 +217,30 @@ void GpsPayload(char *packetCapture, FILE *writeFile)
 		float accuracy = strtof(packetCapture,NULL);
 		eg.accuracy = convertInt(accuracy);
 
+		int size = sizeof(eg);
+		printf("sizeof%d",size);
+
+		writeHeaders(writeFile, size);
+		ez -> length = htonl((12 + size))>> 8;
+
+		printf("length %x\n", ez->length); 
+		fwrite(ez, sizeof(*ez), 1, writeFile);
 		fwrite(&eg, sizeof(eg), 1, writeFile);
+	}
+
+void MessagePayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
+	{
+		while(!isalnum(*packetCapture))
+		{
+			packetCapture++;
+		}
+
+		int size = strlen(packetCapture) -1;
+		writeHeaders(writeFile, size);
+		ez -> length = htonl((12 + size)) >> 8;
+		printf("Length %x\n", ez->length);
+		fwrite(ez, sizeof(*ez), 1, writeFile);
+		fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
 	}
 
 
