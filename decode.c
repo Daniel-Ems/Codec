@@ -59,7 +59,9 @@ int main(int argc, char *argv[])
 	int padding;
 	int nextPos;
 
+	puts(""); 
 	do{
+
 	struct PcapHeader ph;
 	fCheck = fread(&ph, sizeof(ph), 1, decodeFile);
 	if(fCheck != 1)
@@ -140,7 +142,7 @@ int main(int argc, char *argv[])
 
 	fseek(decodeFile, padding, SEEK_CUR);
 	nextPos = ftell(decodeFile);
-
+	puts("");
 	}while(nextPos != lastPos); 
 
 	fclose(decodeFile);
