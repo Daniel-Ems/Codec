@@ -120,49 +120,6 @@ int main (int argc, char *argv[])
 
 	fwrite(&ez,sizeof(ez),1, writeFile);
 
-	struct EncodeGps eg;
-	const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed", 	"Accuracy"};
-
-	double latitude = strtod(packetCapture, NULL);
-	if(strstr(packetCapture, "deg. S"))
-	{
-		latitude = -latitude;
-	}
-	eg.latitude = convertDoub(latitude);
-
-	packetCapture = strcasestr(packetCapture, "Longitude");
-	notDigit(&packetCapture);
-
-	double longitude = strtod(packetCapture, NULL);
-	if(strstr(packetCapture, "deg. W"))
-	{
-		longitude = -longitude;
-	}
-	eg.longitude = convertDoub(longitude);
-
-	packetCapture = strcasestr(packetCapture, "Altitude");
-	notDigit(&packetCapture);
-	float altitude = strtof(packetCapture, NULL);
-	eg.altitude = convertInt((altitude/1.8288));
-
-	packetCapture = strcasestr(packetCapture, "Bearing");
-	notDigit(&packetCapture);
-	float bearing = strtof(packetCapture, NULL);
-	eg.bearing = convertInt(bearing);
-
-	packetCapture = strcasestr(packetCapture, "Speed");
-	notDigit(&packetCapture);
-	float speed = strtof(packetCapture, NULL);
-	eg.speed = convertInt((speed / 3.6));
-
-	packetCapture = strcasestr(packetCapture, "Accuracy");
-	notDigit(&packetCapture);
-	float accuracy = strtof(packetCapture,NULL);
-	eg.accuracy = convertInt(accuracy);
-
-	fwrite(&eg, sizeof(eg), 1, writeFile);
-	
-	//printf("longitude%ld\n", longitude);
 	printf("packetCapture%s\n", packetCapture);
 	puts("\n");
 		int typeCase = type;
@@ -174,10 +131,9 @@ int main (int argc, char *argv[])
 				break;
 			case(2):
 				CommandPayload(packetCapture, writeFile);
-				printf("Its a Comm\n");
 				break;
 			case(3):
-				printf("Its a gps\n");
+				GpsPayload(packetCapture, writeFile);
 				break;
 
 		}
