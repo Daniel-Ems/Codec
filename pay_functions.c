@@ -12,7 +12,8 @@ void messFunction(union PayloadStructs *zerg)
 
 void statFunction(union PayloadStructs *zerg)
 {
-		uint32_t armor = zerg -> stat.hit_armor &0xf;
+		uint32_t armor = ntohl(zerg -> stat.hit_armor) & 0xf;
+
 		zerg -> stat.hit_armor = ntohl(zerg -> stat.hit_armor) >> 8;
 		int32_t type = ntohl(zerg -> stat.max_type) & 0xf;
 		zerg -> stat.max_type = ntohl(zerg -> stat.max_type) >> 8;
@@ -42,8 +43,8 @@ void commFunction(union PayloadStructs *zerg)
 			case (1):
 				printf("GOTO\n");
 				float location = converter(&zerg->comm.parameter_two);
-				printf("location: %f\n", location);
-				printf("%d m\n", ntohs(zerg->comm.parameter_one));
+				printf("Bearing: %f\n", location);
+				printf("Distance: %dm\n", ntohs(zerg->comm.parameter_one));
 				break;
 			case (2):
 				printf("GET_GPS\n");
