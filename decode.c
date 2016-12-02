@@ -112,9 +112,9 @@ main(int argc, char *argv[])
             break;
         }
 
-        int total = zh.version >> 24;
+        int total = ntohl(zh.version) & 0xffffff;
 
-        if (total == 0)
+        if (total < 12)
         {
             printf("Packet Corrupt: Bad Zerg Size\n");
             return EX_USAGE;
