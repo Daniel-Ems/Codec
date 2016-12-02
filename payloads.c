@@ -11,366 +11,389 @@
 #include "encode_function.h"
 #include "payloads.h"
 
-int StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
-	{
-	int exit = 0;
-	int fCheck;
+int
+StatusPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
+{
+    int exit = 0;
+    int fCheck;
 
-	char *name = calloc(1, 6 );
-	char *newName = name;
+    char *name = calloc(1, 6);
+    char *newName = name;
 
-	int a = 0;
-	while(!isalnum(*packetCapture))
-	{
-		packetCapture++;
-	}
-	while(isalnum(*packetCapture))
-	{
-		name[a] = *packetCapture;
-		packetCapture++;
-		a++;
-	}
+    int a = 0;
 
-	struct EncodeStatusPacket esp;
+    while (!isalnum(*packetCapture))
+    {
+        packetCapture++;
+    }
+    while (isalnum(*packetCapture))
+    {
+        name[a] = *packetCapture;
+        packetCapture++;
+        a++;
+    }
 
-	a=0;
-	packetCapture = strcasestr(packetCapture, "hp");
+    struct EncodeStatusPacket esp;
 
-	notDigit(&packetCapture);
-	int number = htonl(strtol(packetCapture, NULL, 10));
-	esp.hitPoints = number >> 8;
+    a = 0;
+    packetCapture = strcasestr(packetCapture, "hp");
 
-	while(isalnum(*packetCapture))
-	{
-		packetCapture++;
-	}
-	a=0;
-	notDigit(&packetCapture);
-	number = htonl(strtol(packetCapture, NULL, 10));
-	esp.maxPoints = number >> 8;
+    notDigit(&packetCapture);
+    int number = htonl(strtol(packetCapture, NULL, 10));
 
-	const char *typeField[16] = {"Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone", "Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk", "Mutalisk", "Defiler", "Devourer"}; 
+    esp.hitPoints = number >> 8;
 
-	int z = 0;
-	while(strcasestr(packetCapture, typeField[z])== NULL)
-	{
-		z++;
-	}
+    while (isalnum(*packetCapture))
+    {
+        packetCapture++;
+    }
+    a = 0;
+    notDigit(&packetCapture);
+    number = htonl(strtol(packetCapture, NULL, 10));
+    esp.maxPoints = number >> 8;
 
-	packetCapture = strcasestr(packetCapture, typeField[z]);
-	esp.type = z;
+    const char *typeField[16] =
+        { "Overmind", "Larva", "Cerebrate", "Overlord", "Queen", "Drone",
+"Zergling", "Lurker", "Broodling", "Hydralisk", "Guardian", "Scourge", "Ultralisk",
+"Mutalisk", "Defiler", "Devourer" };
 
-	packetCapture = strcasestr(packetCapture, "Armor");
-	notDigit(&packetCapture);
-	esp.armor = strtol(packetCapture, NULL, 10);
+    int z = 0;
 
-	float tmpNum;
-	packetCapture = strcasestr(packetCapture, "maxspeed");
-	notDigit(&packetCapture);
-	tmpNum = strtof(packetCapture, NULL);
-	esp.speed = convertInt(tmpNum);
+    while (strcasestr(packetCapture, typeField[z]) == NULL)
+    {
+        z++;
+    }
 
-	int size = (sizeof(esp) + strlen(name));
+    packetCapture = strcasestr(packetCapture, typeField[z]);
+    esp.type = z;
 
-	ez -> length = ntohl((12 + size)) >> 8;
+    packetCapture = strcasestr(packetCapture, "Armor");
+    notDigit(&packetCapture);
+    esp.armor = strtol(packetCapture, NULL, 10);
 
-	writeHeaders(writeFile, size); 
-	if(exit)
-	{
-		return exit;
-	}
+    float tmpNum;
 
-	fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-	exit = writeCheck(fCheck);
-	if(exit)
-	{
-		return exit;
-	}
+    packetCapture = strcasestr(packetCapture, "maxspeed");
+    notDigit(&packetCapture);
+    tmpNum = strtof(packetCapture, NULL);
+    esp.speed = convertInt(tmpNum);
 
-	fCheck = fwrite(&esp,sizeof(esp),1, writeFile);
-	exit = writeCheck(fCheck);
-	if(exit)
-	{
-		return exit;
-	}
+    int size = (sizeof(esp) + strlen(name));
 
-	fCheck = fwrite(name, strlen(name),1,writeFile);
-	exit = writeCheck(fCheck);
-	if(exit)
-	{
-		return exit;
-	}
+    ez->length = ntohl((12 + size)) >> 8;
 
-	free(newName);
-	return exit;
-	}
+    writeHeaders(writeFile, size);
+    if (exit)
+    {
+        return exit;
+    }
 
-int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
-	{
-		int a = 0;
-		int exit = 0;
-		int fCheck;
-		const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
-		"RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
+    fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
 
-		const char *addRemove[2] = {"Remove", "Add" };
+    fCheck = fwrite(&esp, sizeof(esp), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
 
-		struct CommandPacket cp;
-		a = 0;
-		int size = 8;
-		while(strcasestr(packetCapture, commandGroups[a]) == NULL)
-		{
-			a++;
-		}
+    fCheck = fwrite(name, strlen(name), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
 
-		int command = a;
-		if(command % 2 == 0 || command == 3 )
-		{
-			cp.command = htons(command);
-			int size = 2;
+    free(newName);
+    return exit;
+}
 
-			ez -> length = ntohl((12 + size)) >> 8;
+int
+CommandPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
+{
+    int a = 0;
+    int exit = 0;
+    int fCheck;
 
-			exit = writeHeaders(writeFile, size);
-			if(exit)
-			{
-				return exit;
-			}
+    const char *commandGroups[8] =
+        { "GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
+        "RETURN", "SET_GROUP", "STOP", "REPEAT"
+    };
 
-			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+    const char *addRemove[2] = { "Remove", "Add" };
 
-			fCheck = fwrite(&cp, 2, 1, writeFile); 
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
-		}
-		else if(command == 1)
-		{
-			cp.command = htons(command);
-			packetCapture = strcasestr(packetCapture, "Bearing");
-			notDigit(&packetCapture);
-			float tmpNum = strtof(packetCapture, NULL);
+    struct CommandPacket cp;
 
-			cp.parameter_two = convertInt(tmpNum);
-			notDigit(&packetCapture);
-			packetCapture = strcasestr(packetCapture, "Distance");
-			notDigit(&packetCapture);
-			cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
+    a = 0;
+    int size = 8;
 
-			ez -> length = ntohl((12 + size)) >> 8;
+    while (strcasestr(packetCapture, commandGroups[a]) == NULL)
+    {
+        a++;
+    }
 
-			exit = writeHeaders(writeFile, size);
-			if(exit)
-			{
-				return exit;
-			}
+    int command = a;
 
-			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+    if (command % 2 == 0 || command == 3)
+    {
+        cp.command = htons(command);
+        int size = 2;
 
-			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+        ez->length = ntohl((12 + size)) >> 8;
 
-		}
-		else if(command == 5)
-		{
-			a = 0;
-			cp.command = htons(command);
-			while(strcasestr(packetCapture, addRemove[a]) == NULL)
-			{
-				a++;
-			}
-			cp.parameter_one = htons(a);
-			packetCapture = strcasestr(packetCapture, "to");
-			while(isalpha(*packetCapture))
-			{
-				packetCapture++;
-			}
-			packetCapture++;
-			cp.parameter_two = strtol(packetCapture,NULL,10);
+        exit = writeHeaders(writeFile, size);
+        if (exit)
+        {
+            return exit;
+        }
 
-			ez -> length = ntohl((12  + size)) >> 8;
+        fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-			exit = writeHeaders(writeFile, size);
-			if(exit)
-			{
-				return exit;
-			}
+        fCheck = fwrite(&cp, 2, 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
+    }
+    else if (command == 1)
+    {
+        cp.command = htons(command);
+        packetCapture = strcasestr(packetCapture, "Bearing");
+        notDigit(&packetCapture);
+        float tmpNum = strtof(packetCapture, NULL);
 
-			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+        cp.parameter_two = convertInt(tmpNum);
+        notDigit(&packetCapture);
+        packetCapture = strcasestr(packetCapture, "Distance");
+        notDigit(&packetCapture);
+        cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
 
-			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+        ez->length = ntohl((12 + size)) >> 8;
 
-		}
-		else if(command == 7)
-		{
-			cp.command = htons(command);
-			notDigit(&packetCapture);
-			cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
-			cp.parameter_one = 0x0000;
+        exit = writeHeaders(writeFile, size);
+        if (exit)
+        {
+            return exit;
+        }
 
-			ez -> length = ntohl((12 + size)) >> 8;
+        fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-			exit = writeHeaders(writeFile, size);
-			if(exit)
-			{
-				return exit;
-			}
+        fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+    }
+    else if (command == 5)
+    {
+        a = 0;
+        cp.command = htons(command);
+        while (strcasestr(packetCapture, addRemove[a]) == NULL)
+        {
+            a++;
+        }
+        cp.parameter_one = htons(a);
+        packetCapture = strcasestr(packetCapture, "to");
+        while (isalpha(*packetCapture))
+        {
+            packetCapture++;
+        }
+        packetCapture++;
+        cp.parameter_two = strtol(packetCapture, NULL, 10);
 
-			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
-			exit = writeCheck(fCheck);
-			if(exit)
-			{
-				return exit;
-			}
+        ez->length = ntohl((12 + size)) >> 8;
 
-		}
-		else
-		{
-			printf("Packet Corrupt");
-			exit = 1;
-			return exit;
-		}
-	return exit;
-	}
+        exit = writeHeaders(writeFile, size);
+        if (exit)
+        {
+            return exit;
+        }
 
-int GpsPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
-	{
-		int exit = 0;
-		int fCheck;
-		struct EncodeGps eg;
-	//const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed", 	//"Accuracy"};
+        fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-		double latitude = strtod(packetCapture, NULL);
-		if(strstr(packetCapture, "deg. S"))
-		{
-			latitude = -latitude;
-		}
-		eg.latitude = convertDoub(latitude);
+        fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-		packetCapture = strcasestr(packetCapture, "Longitude");
-		notDigit(&packetCapture);
+    }
+    else if (command == 7)
+    {
+        cp.command = htons(command);
+        notDigit(&packetCapture);
+        cp.parameter_two = htonl(strtol(packetCapture, NULL, 10));
+        cp.parameter_one = 0x0000;
 
-		double longitude = strtod(packetCapture, NULL);
-		if(strstr(packetCapture, "deg. W"))
-		{
-			longitude = -longitude;
-		}
-		eg.longitude = convertDoub(longitude);
+        ez->length = ntohl((12 + size)) >> 8;
 
-		packetCapture = strcasestr(packetCapture, "Altitude");
-		notDigit(&packetCapture);
-		float altitude = strtof(packetCapture, NULL);
-		eg.altitude = convertInt((altitude/1.8288));
+        exit = writeHeaders(writeFile, size);
+        if (exit)
+        {
+            return exit;
+        }
 
-		packetCapture = strcasestr(packetCapture, "Bearing");
-		notDigit(&packetCapture);
-		float bearing = strtof(packetCapture, NULL);
-		eg.bearing = convertInt(bearing);
+        fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-		packetCapture = strcasestr(packetCapture, "Speed");
-		notDigit(&packetCapture);
-		float speed = strtof(packetCapture, NULL);
-		eg.speed = convertInt((speed / 3.6));
+        fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+        exit = writeCheck(fCheck);
+        if (exit)
+        {
+            return exit;
+        }
 
-		packetCapture = strcasestr(packetCapture, "Accuracy");
-		notDigit(&packetCapture);
-		float accuracy = strtof(packetCapture,NULL);
-		eg.accuracy = convertInt(accuracy);
+    }
+    else
+    {
+        printf("Packet Corrupt");
+        exit = 1;
+        return exit;
+    }
+    return exit;
+}
 
-		int size = sizeof(eg);
+int
+GpsPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
+{
+    int exit = 0;
+    int fCheck;
+    struct EncodeGps eg;
 
-		ez -> length = htonl((12 + size))>> 8;
+    //const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed",  //"Accuracy"};
 
-		exit = writeHeaders(writeFile, size);
-		if(exit)
-		{
-			return exit;
-		}
- 
-		fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-		exit = writeCheck(fCheck);
-		if(exit)
-		{
-			return exit;
-		}
+    double latitude = strtod(packetCapture, NULL);
 
-		fCheck = fwrite(&eg, sizeof(eg), 1, writeFile);
-		exit = writeCheck(fCheck);
-		if(exit)
-		{
-			return exit;
-		}
-		
-		return exit;
-	}
+    if (strstr(packetCapture, "deg. S"))
+    {
+        latitude = -latitude;
+    }
+    eg.latitude = convertDoub(latitude);
 
-int MessagePayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
-	{
-		int exit = 0;
-		int fCheck;
-		while(!isalnum(*packetCapture))
-		{
-			packetCapture++;
-		}
+    packetCapture = strcasestr(packetCapture, "Longitude");
+    notDigit(&packetCapture);
 
-		int size = strlen(packetCapture) -1;
+    double longitude = strtod(packetCapture, NULL);
 
-		ez -> length = htonl((12 + size)) >> 8;
+    if (strstr(packetCapture, "deg. W"))
+    {
+        longitude = -longitude;
+    }
+    eg.longitude = convertDoub(longitude);
 
-		exit = writeHeaders(writeFile, size);
-		if(exit)
-		{
-				return exit;
-		}
+    packetCapture = strcasestr(packetCapture, "Altitude");
+    notDigit(&packetCapture);
+    float altitude = strtof(packetCapture, NULL);
 
-		fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
-		exit = writeCheck(fCheck);
-		if(exit)
-		{
-			return exit;
-		}
+    eg.altitude = convertInt((altitude / 1.8288));
 
-		fCheck = fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
-		exit = writeCheck(fCheck);
-		if(exit)
-		{
-			return exit;
-		}
+    packetCapture = strcasestr(packetCapture, "Bearing");
+    notDigit(&packetCapture);
+    float bearing = strtof(packetCapture, NULL);
 
-		return exit;
-	}
+    eg.bearing = convertInt(bearing);
 
+    packetCapture = strcasestr(packetCapture, "Speed");
+    notDigit(&packetCapture);
+    float speed = strtof(packetCapture, NULL);
 
+    eg.speed = convertInt((speed / 3.6));
+
+    packetCapture = strcasestr(packetCapture, "Accuracy");
+    notDigit(&packetCapture);
+    float accuracy = strtof(packetCapture, NULL);
+
+    eg.accuracy = convertInt(accuracy);
+
+    int size = sizeof(eg);
+
+    ez->length = htonl((12 + size)) >> 8;
+
+    exit = writeHeaders(writeFile, size);
+    if (exit)
+    {
+        return exit;
+    }
+
+    fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
+
+    fCheck = fwrite(&eg, sizeof(eg), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
+
+    return exit;
+}
+
+int
+MessagePayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
+{
+    int exit = 0;
+    int fCheck;
+
+    while (!isalnum(*packetCapture))
+    {
+        packetCapture++;
+    }
+
+    int size = strlen(packetCapture) - 1;
+
+    ez->length = htonl((12 + size)) >> 8;
+
+    exit = writeHeaders(writeFile, size);
+    if (exit)
+    {
+        return exit;
+    }
+
+    fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
+
+    fCheck = fwrite(packetCapture, strlen(packetCapture) - 1, 1, writeFile);
+    exit = writeCheck(fCheck);
+    if (exit)
+    {
+        return exit;
+    }
+
+    return exit;
+}
