@@ -6,7 +6,7 @@ struct_init(int total, FILE * decodeFile)
 {
     int fCheck;
     union PayloadStructs *memory =
-        calloc(((total - zerg_header_length) + 1), 1);
+        calloc((total - zerg_header_length + 1), 1);
     if (!memory)
     {
         printf("NO MALLOC");
