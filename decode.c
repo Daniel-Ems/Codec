@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 		return EX_USAGE;
 	}
 
-	size_t fCheck;
+	int fCheck;
 	struct FileHeader fh;
 	fCheck = fread(&fh, sizeof(fh), 1, decodeFile);
 	if(fCheck != 1)
