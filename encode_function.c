@@ -103,6 +103,8 @@ notDigit(char **packetCapture)
     }
 }
 
+
+//Conceptually explained by Dow
 uint32_t
 convertInt(float tmpNum)
 {
@@ -120,6 +122,7 @@ convertInt(float tmpNum)
     return maxSpeed;
 }
 
+//Conceptually explained by Dow
 uint64_t
 convertDoub(double number)
 {
@@ -131,6 +134,7 @@ convertDoub(double number)
 
     union ConvertDoub conversion;
 
+    //htobe64 compliments of Washington
     conversion.placeHolder = number;
     return htobe64(conversion.oldNumber);
 }
