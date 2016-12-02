@@ -19,7 +19,7 @@ struct_init(int total, FILE * decodeFile)
     return memory;
 }
 
-
+//Conceptually Explained by Dow
 float
 converter(uint32_t * thing)
 {
@@ -66,6 +66,7 @@ doub_flip(uint32_t * most, uint32_t * least)
     return flipped_double;
 }
 
+//Conceptually explained by Dow
 double
 doub_converter(uint64_t * number)
 {
