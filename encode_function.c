@@ -138,22 +138,35 @@ void fileHeader(FILE *writeFile)
 
 
 
-void writeHeaders(FILE *writeFile, int size)
+int writeHeaders(FILE *writeFile, int size)
 	{
+		int fCheck;
+		int exit = 0;
+
 		struct PcapHeader ph;
 		ph.unixEpoch = 0x00000000;
 		ph.epochMicroseconds = 0x00000000;
 		ph.captureLength = (54 + size); 
 		ph.packetLength = 0x00000000;
 
-		fwrite(&ph, sizeof(ph), 1, writeFile);
+		fCheck = fwrite(&ph, sizeof(ph), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
 
 		struct EthernetFrame ef;
 		ef.d_mac = 0x000000000000;
 		ef.s_mac = 0x111111111111;
 		ef.type = 0x0008; 
 
-		fwrite(&ef, sizeof(ef), 1, writeFile);
+		fCheck = fwrite(&ef, sizeof(ef), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
 
 		struct encodeIpv4 ei;
 		ei.version = 0x45; 
@@ -166,7 +179,12 @@ void writeHeaders(FILE *writeFile, int size)
 		ei.s_ip = 0x87654321;
 		ei.d_ip = 0x12345678;
 
-		fwrite(&ei, sizeof(ei), 1, writeFile);
+		fCheck = fwrite(&ei, sizeof(ei), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
 
 		struct UdpHeader uh;
 		uh.s_port = 0x1111;
@@ -174,7 +192,24 @@ void writeHeaders(FILE *writeFile, int size)
 		uh.length = htons(20 + size);
 		uh.checksum = 0x4444;
 
-		fwrite(&uh, sizeof(uh), 1, writeFile);
+		fCheck = fwrite(&uh, sizeof(uh), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
+
+	return exit;
+	}
+
+int writeCheck(int fCheck)
+	{
+		int exit = 0;
+		if(fCheck != 1)
+		{
+			exit = 1;
+		}
+		return exit;
 	}
 
 
