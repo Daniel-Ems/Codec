@@ -55,8 +55,8 @@ main(int argc, char *argv[])
     {
         tmpBuff[count] = fgetc(encodeFile);
     }
-    fileHeader(writeFile);
 
+    fileHeader(writeFile);
     while (tmpBuff)
     {
 
