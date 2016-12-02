@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 	}
 
 	int total = zh.version >> 24;
+
 	if(total == 0)
 	{
 		printf("Packet Corrupt: Bad Zerg Size\n");
@@ -113,7 +114,8 @@ int main(int argc, char *argv[])
 		return EX_USAGE;
 	}
 
-	padding = (ph.captureLength - etherIpUdp - total);
+	padding = (ph.captureLength - etherIpUdp) - total;
+
 	union PayloadStructs *zerged;
 
 	int type = zh.version & 0x0f;
