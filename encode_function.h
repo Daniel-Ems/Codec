@@ -18,7 +18,8 @@
 #include "structs.h"
 
 void fileHeader(FILE *writeFile);
-void writeHeaders(FILE *writeFile, int size);
+int writeHeaders(FILE *writeFile, int size);
+int writeCheck(int fCheck);
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
 void getPayload(char **packerCapture,int type);
