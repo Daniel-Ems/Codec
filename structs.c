@@ -14,7 +14,7 @@ struct_init(int total, FILE * decodeFile)
     fCheck = fread(memory, total - zerg_header_length, 1, decodeFile);
     if (fCheck != 1)
     {
-        printf("bad fread\n");
+        memory = NULL;
     }
     return memory;
 }
