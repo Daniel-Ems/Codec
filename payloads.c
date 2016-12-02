@@ -14,6 +14,8 @@
 int StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 	int exit = 0;
+	int fCheck;
+
 	char *name = calloc(1, 6 );
 	char *newName = name;
 
@@ -70,16 +72,34 @@ int StatusPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 
 	int size = (sizeof(esp) + strlen(name));
 
+	ez -> length = ntohl((12 + size)) >> 8;
+
 	writeHeaders(writeFile, size); 
 	if(exit)
 	{
 		return exit;
 	}
 
-	ez -> length = ntohl((12 + size)) >> 8;
-	fwrite(ez, sizeof(*ez), 1, writeFile);
-	fwrite(&esp,sizeof(esp),1, writeFile);
-	fwrite(name, strlen(name),1,writeFile);
+	fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+	exit = writeCheck(fCheck);
+	if(exit)
+	{
+		return exit;
+	}
+
+	fCheck = fwrite(&esp,sizeof(esp),1, writeFile);
+	exit = writeCheck(fCheck);
+	if(exit)
+	{
+		return exit;
+	}
+
+	fCheck = fwrite(name, strlen(name),1,writeFile);
+	exit = writeCheck(fCheck);
+	if(exit)
+	{
+		return exit;
+	}
 
 	free(newName);
 	return exit;
@@ -89,6 +109,7 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 		int a = 0;
 		int exit = 0;
+		int fCheck;
 		const char *commandGroups[8] = {"GET_STATUS", "GOTO", "GET_GPS", "RESERVED",
 		"RETURN", "SET_GROUP", "STOP", "REPEAT"}; 
 
@@ -108,15 +129,27 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 			cp.command = htons(command);
 			int size = 2;
 
+			ez -> length = ntohl((12 + size)) >> 8;
+
 			exit = writeHeaders(writeFile, size);
 			if(exit)
 			{
 				return exit;
 			}
 
-			ez -> length = ntohl((12 + size)) >> 8;
-			fwrite(ez, sizeof(*ez), 1, writeFile);
-			fwrite(&cp, 2, 1, writeFile); 
+			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
+			fCheck = fwrite(&cp, 2, 1, writeFile); 
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
 		}
 		else if(command == 1)
 		{
@@ -131,15 +164,28 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 			notDigit(&packetCapture);
 			cp.parameter_one = htons(strtol(packetCapture, NULL, 10));
 
+			ez -> length = ntohl((12 + size)) >> 8;
+
 			exit = writeHeaders(writeFile, size);
 			if(exit)
 			{
 				return exit;
 			}
 
-			ez -> length = ntohl((12 + size)) >> 8;
-			fwrite(ez, sizeof(*ez), 1, writeFile);
-			fwrite(&cp, sizeof(cp), 1, writeFile);
+			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
+			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
 		}
 		else if(command == 5)
 		{
@@ -158,15 +204,28 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 			packetCapture++;
 			cp.parameter_two = strtol(packetCapture,NULL,10);
 
+			ez -> length = ntohl((12  + size)) >> 8;
+
 			exit = writeHeaders(writeFile, size);
 			if(exit)
 			{
 				return exit;
 			}
 
-			ez -> length = ntohl((12  + size)) >> 8;
-			fwrite(ez, sizeof(*ez), 1, writeFile);
-			fwrite(&cp, sizeof(cp), 1, writeFile);
+			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
+			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
 		}
 		else if(command == 7)
 		{
@@ -175,15 +234,28 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 			cp.parameter_two = htonl(strtol(packetCapture,NULL,10));
 			cp.parameter_one = 0x0000;
 
+			ez -> length = ntohl((12 + size)) >> 8;
+
 			exit = writeHeaders(writeFile, size);
 			if(exit)
 			{
 				return exit;
 			}
 
-			ez -> length = ntohl((12 + size)) >> 8;
-			fwrite(ez, sizeof(*ez), 1, writeFile);
-			fwrite(&cp, sizeof(cp), 1, writeFile);
+			fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
+			fCheck = fwrite(&cp, sizeof(cp), 1, writeFile);
+			exit = writeCheck(fCheck);
+			if(exit)
+			{
+				return exit;
+			}
+
 		}
 		else
 		{
@@ -197,6 +269,7 @@ int CommandPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 int GpsPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 		int exit = 0;
+		int fCheck;
 		struct EncodeGps eg;
 	//const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed", 	//"Accuracy"};
 
@@ -239,22 +312,35 @@ int GpsPayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 
 		int size = sizeof(eg);
 
-		writeHeaders(writeFile, size);
+		ez -> length = htonl((12 + size))>> 8;
+
+		exit = writeHeaders(writeFile, size);
+		if(exit)
+		{
+			return exit;
+		}
+ 
+		fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+		exit = writeCheck(fCheck);
 		if(exit)
 		{
 			return exit;
 		}
 
-		ez -> length = htonl((12 + size))>> 8;
- 
-		fwrite(ez, sizeof(*ez), 1, writeFile);
-		fwrite(&eg, sizeof(eg), 1, writeFile);
+		fCheck = fwrite(&eg, sizeof(eg), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
+		
 		return exit;
 	}
 
 int MessagePayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 	{
 		int exit = 0;
+		int fCheck;
 		while(!isalnum(*packetCapture))
 		{
 			packetCapture++;
@@ -262,15 +348,27 @@ int MessagePayload(char *packetCapture, FILE *writeFile, struct EncodeZerg *ez)
 
 		int size = strlen(packetCapture) -1;
 
+		ez -> length = htonl((12 + size)) >> 8;
+
 		exit = writeHeaders(writeFile, size);
 		if(exit)
 		{
 				return exit;
 		}
 
-		ez -> length = htonl((12 + size)) >> 8;
-		fwrite(ez, sizeof(*ez), 1, writeFile);
-		fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
+		fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
+
+		fCheck = fwrite(packetCapture, strlen(packetCapture) -1 , 1, writeFile);
+		exit = writeCheck(fCheck);
+		if(exit)
+		{
+			return exit;
+		}
 
 		return exit;
 	}
