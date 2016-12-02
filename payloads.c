@@ -17,7 +17,7 @@ StatusPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
     int exit = 0;
     int fCheck;
 
-    char *name = calloc(1, 6);
+    char *name = calloc(1, strlen(packetCapture));
     char *newName = name;
 
     int a = 0;
@@ -26,6 +26,7 @@ StatusPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
     {
         packetCapture++;
     }
+
     while (isalnum(*packetCapture))
     {
         name[a] = *packetCapture;
@@ -80,13 +81,14 @@ StatusPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
 
     int size = (sizeof(esp) + strlen(name));
 
-    ez->length = ntohl((12 + size)) >> 8;
 
-    writeHeaders(writeFile, size);
+    exit = writeHeaders(writeFile, size);
     if (exit)
     {
         return exit;
     }
+
+    ez->length = ntohl((12 + size)) >> 8;
 
     fCheck = fwrite(ez, sizeof(*ez), 1, writeFile);
     exit = writeCheck(fCheck);
