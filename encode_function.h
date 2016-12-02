@@ -17,16 +17,17 @@
 #include <sys/stat.h>
 #include "structs.h"
 
-void fileHeader(FILE *writeFile);
-int writeHeaders(FILE *writeFile, int size);
+void fileHeader(FILE * writeFile);
+int writeHeaders(FILE * writeFile, int size);
 int writeCheck(int fCheck);
 int getVal(char **tmpBuff, const char *search);
 int getType(char *payload);
-void getPayload(char **packerCapture,int type);
+void getPayload(char **packerCapture, int type);
 char *getPacket(char *tmpBuff, char *payload, off_t fileEnd);
 void notDigit(char **packetCapture);
 uint32_t convertInt(float tmpNum);
 uint64_t convertDoub(double number);
+
 //char payVals(char **packetCapture, const char *search, off_t fileEnd);
 
 #endif
