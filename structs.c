@@ -27,7 +27,7 @@ float converter(uint32_t *thing)
 void print_zerg_header(struct ZergHeader zerg)
 {
 
-	zerg.version = (zerg.version &0x10) >> 4;
+	zerg.version = (zerg.version & 0x10) >> 4;
 
 	printf("Version : %d\n", zerg.version);
 	printf("Sequence: %d\n", ntohl(zerg.id));
