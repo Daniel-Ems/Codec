@@ -23,7 +23,7 @@ enum
 enum
 { etherIpUdp = 14 + 20 + 8 };
 
-
+//Used to read/write in the file header
 struct FileHeader
 {
 
@@ -36,6 +36,7 @@ struct FileHeader
     uint32_t linkLayer;
 };
 
+//Used to read/write in the packet capture headers
 struct PcapHeader
 {
     uint32_t unixEpoch;
@@ -44,7 +45,7 @@ struct PcapHeader
     uint32_t packetLength;
 };
 
-
+//Used to read/write in the ethernet frame
 struct __attribute__ ((packed)) EthernetFrame
 {
     uint64_t d_mac:48;
@@ -52,6 +53,7 @@ struct __attribute__ ((packed)) EthernetFrame
     uint32_t type:16;
 };
 
+//Used to read in the ipv4 header
 struct __attribute__ ((packed)) Ipv4Header
 {
     uint32_t version:16;
@@ -65,6 +67,7 @@ struct __attribute__ ((packed)) Ipv4Header
     uint32_t d_ip;
 };
 
+//Used to write the ipv4 header for the encoder
 struct __attribute__ ((packed)) encodeIpv4
 {
     uint32_t version:8;
@@ -78,6 +81,7 @@ struct __attribute__ ((packed)) encodeIpv4
     uint32_t d_ip;
 };
 
+//Used to read/write the Udp Header
 struct UdpHeader
 {
     uint32_t s_port:16;
@@ -86,6 +90,7 @@ struct UdpHeader
     uint32_t checksum:16;
 };
 
+//Used to read the zerg packet header
 struct __attribute__ ((packed)) ZergHeader
 {
     uint32_t version;
@@ -94,6 +99,7 @@ struct __attribute__ ((packed)) ZergHeader
     uint32_t id;
 };
 
+//Used to write the zerg packet header in Encoder
 struct __attribute__ ((packed)) EncodeZerg
 {
     uint32_t type:4;
@@ -104,6 +110,7 @@ struct __attribute__ ((packed)) EncodeZerg
     uint32_t id;
 };
 
+//Used to read status packet payloads
 struct StatusPacket
 {
     uint32_t hit_armor;
@@ -112,6 +119,7 @@ struct StatusPacket
     char name[1];
 };
 
+//Used to write the status packet payloads
 struct __attribute__ ((packed)) EncodeStatusPacket
 {
     uint32_t hitPoints:24;
@@ -121,12 +129,13 @@ struct __attribute__ ((packed)) EncodeStatusPacket
     uint32_t speed;
 };
 
+//Used to read message packet payloads
 struct MessagePacket
 {
     char message[1];
 };
 
-
+//Used to read/write command packet payloads
 struct CommandPacket
 {
     uint32_t command:16;
@@ -134,6 +143,7 @@ struct CommandPacket
     uint32_t parameter_two;
 };
 
+//Used to read Gps packet payloads
 struct GpsPacket
 {
     uint32_t long_first;
@@ -145,6 +155,8 @@ struct GpsPacket
     uint32_t speed;
     uint32_t accuracy;
 };
+
+//Used to write Gps packet payloads
 struct EncodeGps
 {
     uint64_t longitude;
@@ -155,6 +167,7 @@ struct EncodeGps
     uint32_t accuracy;
 };
 
+//Used to print and format payloads in decode.c
 union PayloadStructs
 {
     struct StatusPacket stat;
