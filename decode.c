@@ -140,10 +140,12 @@ main(int argc, char *argv[])
         print_zerg_header(zh);
 
         zerged = struct_init(total, decodeFile);
+
         if (zerged == NULL)
         {
             return EX_USAGE;
         }
+
         int zerg_header = type;
 
         switch (zerg_header)
