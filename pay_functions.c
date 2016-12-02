@@ -126,5 +126,6 @@ gpsFunction(union PayloadStructs *zerg)
     float accuracy = converter(&zerg->gps.accuracy);
 
     printf("accuracy : %.fm\n", accuracy);
+    free(zerg);
 
 }
