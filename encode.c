@@ -83,25 +83,37 @@ while(tmpBuff)
 	ez -> dest = htons(headerValues[3]);
 	ez -> id = htonl(headerValues[1]);
 
+		int exit = 0;
 		int typeCase = type;
 		switch(typeCase){
 			case(0):
-				MessagePayload(packetCapture, writeFile, ez);
+				exit = MessagePayload(packetCapture, writeFile, ez);
 				break;
 			case(1):
-				StatusPayload(packetCapture, writeFile,ez);
+				exit = StatusPayload(packetCapture, writeFile,ez);
 				break;
 			case(2):
-				CommandPayload(packetCapture, writeFile,ez);
+				exit = CommandPayload(packetCapture, writeFile,ez);
 				break;
 			case(3):
-				GpsPayload(packetCapture, writeFile, ez);
+				exit = GpsPayload(packetCapture, writeFile, ez);
 				break;
 
 		}
+
 	free(packetPointer);
 	free(payloadPointer);
 	free(ez);
+
+	if(exit)
+	{
+		free(buffPointer);
+		free(buf);
+		fclose(encodeFile);
+		fclose(writeFile);
+		return EX_USAGE;
+	}
+
 	tmpBuff = strcasestr(tmpBuff, "Version");
 }
 
