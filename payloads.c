@@ -290,8 +290,6 @@ GpsPayload(char *packetCapture, FILE * writeFile, struct EncodeZerg *ez)
     int fCheck;
     struct EncodeGps eg;
 
-    //const char *gpsFields[5] = {"Longitude", "Altitude", "Bearing", "Speed",  //"Accuracy"};
-
     double latitude = strtod(packetCapture, NULL);
 
     if (strstr(packetCapture, "deg. S"))
